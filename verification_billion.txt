@@ -1,0 +1,14 @@
+MAX_N=1000000000 mode=both threads=4 sieve_MB=119.2
+sieve ready in 5.1s; small twins=8169, small cousins=8144
+progress visited=250000000/999999997 strong_targets=70154968 other_extinctions=0 rate=21431559 pivots/s elapsed=11.7s
+progress visited=500000000/999999997 strong_targets=141241836 other_extinctions=0 rate=26680862 pivots/s elapsed=18.7s
+progress visited=750000000/999999997 strong_targets=212636005 other_extinctions=0 rate=29590239 pivots/s elapsed=25.3s
+example n=19 twin=29,31 cousin=7,11 shift=2 probes=4
+example n=20005 twin=29,31 cousin=39979,39983 shift=-1 probes=9
+example n=20011 twin=11,13 cousin=40009,40013 shift=-1 probes=5
+example n=20014 twin=17,19 cousin=40009,40013 shift=-1 probes=7
+example n=20023 twin=40037,40039 cousin=7,11 shift=2 probes=4
+example n=20026 twin=40037,40039 cousin=13,17 shift=2 probes=6
+example n=20029 twin=40037,40039 cousin=19,23 shift=2 probes=8
+example n=20032 twin=179,181 cousin=39883,39887 shift=-1 probes=25
+SUMMARY NO COUNTEREXAMPLE visited=999999997 residue_targets=284220751 other_extinctions=0 direct_survivors=715779246 empty_old=0 quartets=284220751 first_witness_left=140833140 first_witness_right=143387611 exhaustive_fallbacks=0 max_candidate_probes=2034 failures=0 elapsed_s=31.28

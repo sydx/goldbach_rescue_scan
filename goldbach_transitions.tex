@@ -1,0 +1,517 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\hypersetup{pdftitle={Goldbach Midpoint Transitions and Twin--Cousin Rescue: A Computational Study to One Billion},pdfauthor={Paul A. Bilokon}}
+\usepackage{enumitem}
+\setlist{nosep}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Po}{\mathbb P_{\mathrm{o}}}
+\newcommand{\G}{\mathcal G}
+\newcommand{\Tw}{\mathcal T}
+\newcommand{\TR}{\mathsf{TR}}
+\newcommand{\RTE}{\mathsf{RTE}}
+\newcommand{\RTP}{\mathsf{RTP}}
+\newcommand{\GB}{\mathsf G}
+\newcommand{\TP}{\mathsf T}
+\newcommand{\ind}{\mathbf 1}
+\title{Goldbach Midpoint Transitions and Twin--Cousin Rescue:\\ A Computational Study to One Billion}
+\author{Paul A. Bilokon}
+\date{15 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We study Goldbach representations about a moving pivot, distinguishing the loss of a direct continuation from the loss of all representations. For pivots congruent to $1$ modulo $3$, direct extinction has an exact primality criterion. Dirichlet's theorem then supplies infinitely many such pivots. We conjecture that each extinction is rescued by a twin pair and a prime pair at distance four, and show that this conjecture implies binary Goldbach and infinitely many twin primes. An equivalent four-prime convolution leads to a stronger residue-specific conjecture. An odd-only Eratosthenes sieve and a complete fallback search test every pivot through $10^9$: among $284{,}220{,}751$ residue-specific targets, no failure occurs, and no extinction pivot occurs in the other residue classes. A stricter right-hand orientation already fails at $277$. We give exact algorithms, finite counts, code, and the logical limits of these observations; neither Goldbach nor the twin-prime conjecture is proved.
+\end{abstract}
+\noindent\textbf{Keywords:} Goldbach representations; twin primes; cousin primes; sieve; experimental number theory.
+
+\section{Fixed primes and moving pivots}
+Let $\Po$ be the set of odd primes. For $n\ge3$, define the ordered representation set
+\begin{equation}\label{eq:G}
+ \G_n=\{(p,q)\in\Po^2:p+q=2n\},
+ \qquad E_n=\{p\in\Po:2n-p\in\Po\}.
+\end{equation}
+Both $(p,q)$ and $(q,p)$ are included when $p\ne q$. A diagonal pair is included once. Let $g(n)$ denote the number of unordered representations, including a possible diagonal. We write $\GB$ for the assertion $\G_n\ne\varnothing$ for every $n\ge3$; together with $4=2+2$, this is binary Goldbach. We write $\TP$ for the assertion that infinitely many odd twin-prime pairs exist.
+
+Primality does not change when the pivot moves. Sieving identifies the fixed set of primes; the moving-pivot question concerns which two members of that set have the required midpoint. If $p=m-d$ and $q=m+d$, then relative to $n=m+h$ their signed positions are
+\[
+ p-n=-(d+h),\qquad q-n=d-h.
+\]
+The second expression is a signed coordinate, not necessarily a nonnegative radius. If the fixed prime $q+2h$ exists, its signed position is $d+h$, so it is symmetric to $p$ about $n$.
+
+\begin{proposition}[Exact transition identity]\label{prop:transition}
+Fix $(p,q)\in\G_n$. For any integer $a$, put
+\begin{equation}\label{eq:transition}
+ u=p+2a,\qquad v=q+2-2a.
+\end{equation}
+Then $(u,v)\in\G_{n+1}$ if and only if $u,v\in\Po$. Every ordered representation at $n+1$ has this form relative to the fixed old pair.
+\end{proposition}
+\begin{proof}
+The sum in \eqref{eq:transition} is $2n+2$. Conversely, given $(u,v)\in\G_{n+1}$, the integer $a=(u-p)/2$ gives the first coordinate, and subtraction of the two sums gives the second.
+\end{proof}
+
+The signed endpoint movements are $(2a,2-2a)$. The values $a=0,1$ keep one endpoint fixed and increase the other by $2$. The values $a=2,-1$ give $(4,-2)$ and $(-2,4)$. Larger movements are not excluded by the identity.
+
+\begin{proposition}[Transport from an earlier pivot]\label{prop:earlier}
+If $(p,q)\in\G_m$, $h\ge1$, and $q+2h\in\Po$, then $(p,q+2h)\in\G_{m+h}$. More generally, replacing the endpoints by primes $p-A,q+B$, for signed even integers $A,B$, advances the pivot by $h$ exactly when $B-A=2h$.
+\end{proposition}
+\begin{proof}
+The respective new sums are $2m+2h$ and $2m+B-A$.
+\end{proof}
+
+\section{Direct extinction and the modulo-3 mechanism}
+\begin{definition}
+An integer $n\ge3$ is a \emph{direct-extinction pivot}, denoted $D_n$, if
+\begin{equation}\label{eq:D}
+ \G_n\ne\varnothing,\qquad
+ \forall(p,q)\in\G_n:\quad p+2\notin\Po\ \text{and}\ q+2\notin\Po.
+\end{equation}
+This means that all direct continuations fail. It does not assert $\G_{n+1}=\varnothing$, and it does not mean that any old prime has become composite.
+\end{definition}
+
+Let $\Tw=\{t\in\Po:t+2\in\Po\}$, the set of lower twin members.
+\begin{proposition}[Exact twin characterization]
+For every $n\ge3$,
+\[
+ D_n\quad\Longleftrightarrow\quad
+ E_n\ne\varnothing\ \text{and}\ E_n\cap\Tw=\varnothing.
+\]
+\end{proposition}
+\begin{proof}
+Every endpoint appears in $E_n$. An endpoint $p$ has a direct continuation precisely when $p+2$ is prime, that is, when $p\in\Tw$.
+\end{proof}
+
+\begin{proposition}[Modulo-$3$ extinction]\label{prop:mod3}
+Suppose $n\ge4$, $n\equiv1\pmod3$, and $\G_n\ne\varnothing$. Then
+\begin{equation}\label{eq:mod3}
+ D_n\quad\Longleftrightarrow\quad 2n-3\text{ is composite}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+If $2n-3$ is composite, no representation involves $3$. Every remaining prime endpoint is $1$ or $2$ modulo $3$. As $2n\equiv2\pmod3$, both endpoints must be $1\pmod3$. Adding $2$ gives multiples of $3$ greater than $3$.
+
+Conversely, if $2n-3$ is prime, the pair $(3,2n-3)$ continues to $(5,2n-3)$ at $n+1$. Since $2n-3\ge5$, it is either prime or composite, completing the equivalence.
+\end{proof}
+
+\begin{proposition}[Allowed movements across the residue switch]\label{prop:movements}
+Let $n\equiv1\pmod3$. If $(p,q)\in\G_n$ and $(u,v)\in\G_{n+1}$ have all four endpoints greater than $3$, their movements in \eqref{eq:transition} satisfy
+\begin{equation}\label{eq:k}
+ a\equiv2\pmod3,\qquad
+ (u-p,v-q)=(6k+4,-6k-2),\quad k\in\mathbb Z.
+\end{equation}
+\end{proposition}
+\begin{proof}
+The old endpoints are $1\pmod3$, whereas $2n+2\equiv1\pmod3$ forces both new endpoints to be $2\pmod3$. Thus $2a\equiv1\pmod3$, giving $a=3k+2$.
+\end{proof}
+
+The cases $k=0,-1$ are the twin-and-four-gap exchanges. The cases $k=1,-2$ give $(10,-8)$ and $(-8,10)$. Thus the residue switch alone does not require twins.
+
+\begin{theorem}[Infinitely many direct-extinction pivots]\label{thm:infiniteD}
+Every prime $n\equiv19\pmod{30}$ is a direct-extinction pivot. In particular, infinitely many direct-extinction pivots exist unconditionally.
+\end{theorem}
+\begin{proof}
+The pair $(n,n)$ belongs to $\G_n$. Also $n\equiv1\pmod3$, and $2n-3$ is a multiple of $5$ greater than $5$. Proposition~\ref{prop:mod3} applies. Finally, $\gcd(19,30)=1$, so Dirichlet's theorem gives infinitely many prime values of $n$ in this progression; see \citet[Theorem 17.1]{Sutherland2015}.
+\end{proof}
+
+\section{Twin-assisted replacement and its consequences}
+\begin{conjecture}[Universal twin-assisted replacement, $\TR$]\label{conj:TR}
+For every $n\ge3$, if $D_n$, then some $(p,q)\in\G_n$ satisfies
+\begin{equation}\label{eq:TR}
+ p+4\in\Po,\qquad q-2\in\Po.
+\end{equation}
+\end{conjecture}
+Ordering makes \eqref{eq:TR} include both geometric orientations. The primes $q-2,q$ are twins, and $p,p+4$ are separated by four. The new pair is $(p+4,q-2)$. Neither constituent prime pair is required to be consecutive in the full prime sequence.
+
+\begin{proposition}[Four-prime convolution]\label{prop:four}
+The replacement in Conjecture~\ref{conj:TR} at a given $n$ exists if and only if
+\begin{equation}\label{eq:C}
+ C(n):=\sum_{\substack{t,c\ge3\\t+c=2n-2}}
+ \ind_{\Po}(t)\ind_{\Po}(t+2)\ind_{\Po}(c)\ind_{\Po}(c+4)>0.
+\end{equation}
+The sum is over odd integers. For each positive summand, $(t+2,c)\in\G_n$
+and $(t,c+4)\in\G_{n+1}$.
+\end{proposition}
+\begin{proof}
+Given $(p,q)$ satisfying \eqref{eq:TR}, set $t=q-2$ and $c=p$.
+Then $t+c=2n-2$ and all four required entries are prime.
+Conversely, set $(p,q)=(c,t+2)$ for any positive summand;
+then $(p+4,q-2)=(c+4,t)$ is the new representation.
+\end{proof}
+Sorting the old pair puts the twin pair on either side. The cases
+$a=-1$ and $a=2$ of \eqref{eq:transition} describe these two orientations.
+The representation \eqref{eq:C} has no distinguished ancestor:
+a new Goldbach pair can be compared with multiple old pairs.
+
+\begin{conjecture}[Residue-specific four-prime rescue]\label{conj:strong}
+For every integer $n\ge4$ with $n\equiv1\pmod3$ and $2n-3$ composite,
+$C(n)>0$.
+\end{conjecture}
+Unlike Conjecture~\ref{conj:TR}, this asserts an old Goldbach pair rather
+than assuming one. Proposition~\ref{prop:mod3} shows that it implies
+Conjecture~\ref{conj:TR} at all direct-extinction pivots in this residue
+class. It says nothing by itself about hypothetical extinction pivots
+in the other residue classes.
+
+\begin{proposition}[Local admissibility]\label{prop:localfour}
+For $n\equiv1\pmod3$, the four forms in \eqref{eq:C} have no local
+congruence obstruction. For $n\not\equiv1\pmod3$, their reductions
+cover every residue modulo $3$, except that an actual prime value
+equal to $3$ can bypass this divisibility obstruction.
+\end{proposition}
+\begin{proof}
+Put $M=2n-2$ and regard $t$ as the variable. For a prime $r$, the
+forms $t,t+2,M-t,M-t+4$ vanish at the residues
+$0,-2,M,M+4\pmod r$. At $r=2$ one residue is forbidden.
+At $r=3$, the forbidden set has two elements when $n\equiv1\pmod3$
+and three elements otherwise. For $r\ge5$, at most four residues
+are forbidden, so at least one remains.
+\end{proof}
+In particular, surviving classes modulo every \emph{fixed} product
+of primes do not guarantee a four-prime solution in the bounded
+interval $3\le t\le2n-5$. A prime form equal to a small sieving
+prime must also be handled separately.
+
+\begin{proposition}[A twin-member representation at every step]\label{prop:TRS}
+If Conjecture~\ref{conj:TR} holds, every even integer at least $6$
+has a Goldbach representation with an endpoint belonging to a
+twin-prime pair.
+\end{proposition}
+\begin{proof}
+At $n=3$ use $3+3=6$. Inductively, a direct continuation replaces
+a lower twin member $t$ in an old pair by $t+2$, so the new pair
+contains a twin member. At an extinction pivot, \eqref{eq:TR}
+supplies a new pair containing the lower twin member $q-2$.
+\end{proof}
+This places the transition conjecture alongside the broader
+prime-plus-twin-member conjecture discussed by \citet{Pandey2026}.
+The latter does not require the old and new representations to
+share the four-prime configuration in \eqref{eq:C}.
+
+\begin{theorem}\label{thm:TRG}
+The universal statement $\TR$ implies $\GB$.
+\end{theorem}
+\begin{proof}
+Induct from $\G_3\ni(3,3)$. Suppose $\G_n\ne\varnothing$. If $D_n$ fails, at least one endpoint of some old pair has a prime increment by $2$, yielding a representation at $n+1$. If $D_n$ holds, \eqref{eq:TR} yields one. Thus $\G_n\ne\varnothing$ for every $n\ge3$.
+\end{proof}
+
+\begin{lemma}[Finite endpoint exclusion]\label{lem:finite}
+For any finite set $B\subset\Po$, infinitely many prime pivots $n\equiv19\pmod{30}$ satisfy $D_n$ and $B\cap E_n=\varnothing$.
+\end{lemma}
+\begin{proof}
+The empty-set case is Theorem~\ref{thm:infiniteD}. Otherwise write $B=\{b_1,\ldots,b_k\}$. Choose distinct primes $r_i>\max(5,b_i)$ and impose
+\begin{equation}\label{eq:CRT}
+ n\equiv19\pmod{30},\qquad 2n\equiv b_i\pmod{r_i}\quad(1\le i\le k).
+\end{equation}
+The Chinese remainder theorem gives a residue class $A$ modulo $M=30\prod_i r_i$. It is coprime to $M$: its reduction modulo $30$ is $19$, and modulo each $r_i$ it is the nonzero residue $2^{-1}b_i$. Dirichlet's theorem therefore supplies infinitely many prime $n\equiv A\pmod M$.
+
+Restrict to those large enough that $2n-b_i>r_i$ for every $i$. Then $r_i\mid2n-b_i$, so every $2n-b_i$ is composite. Hence $b_i\notin E_n$ for every $i$. Each such prime $n$ satisfies $D_n$ by Theorem~\ref{thm:infiniteD}.
+\end{proof}
+
+\begin{theorem}\label{thm:TRT}
+The universal statement $\TR$ implies $\TP$.
+\end{theorem}
+\begin{proof}
+Suppose there are only finitely many odd twin pairs and let $B$ consist of all their upper members. Lemma~\ref{lem:finite} supplies a pivot with $D_n$ but $B\cap E_n=\varnothing$. A replacement as in \eqref{eq:TR} requires $q$ to be an upper twin member belonging to $E_n$, a contradiction.
+\end{proof}
+
+\begin{remark}
+Infinitely many successful transitions alone would not force infinitely many distinct twin pairs: one fixed twin pair can participate at many pivots. Lemma~\ref{lem:finite} is the additional argument ruling out finite reuse under the \emph{universal} replacement statement. The proof does not require twins on the right.
+\end{remark}
+
+\section{Directional versions and finite counterexamples}
+\begin{definition}[Right-hand exchange, $\RTE_n$]
+The property $\RTE_n$ holds if some $(p,q)\in\G_n$ satisfies
+\[
+ p+4,q-2\in\Po,\qquad q-2>n+1.
+\]
+Both twin members $q-2,q$ then lie strictly to the right of the \emph{new} pivot.
+\end{definition}
+The proposed universal implication $D_n\Rightarrow\RTE_n$ is false. Its first counterexample for $n\ge3$ is $n=277$.
+
+\begin{example}[The transition $277\to278$]\label{ex:277}
+The old unordered pairs are
+\begin{align*}
+ &(7,547),(13,541),(31,523),(67,487),(97,457),(157,397),\\
+ &(181,373),(223,331),(241,313),(271,283),(277,277).
+\end{align*}
+Here $277\equiv1\pmod3$ and $551=19\cdot29$, so $D_{277}$ holds. Among the old right endpoints, only $523,313,283$ have backward twins. Their corresponding replacements are
+\[
+ (35,521),\qquad(245,311),\qquad(275,281),
+\]
+all with composite left endpoints. Thus $\RTE_{277}$ fails. Nevertheless,
+\[
+ 241+313=554\quad\longrightarrow\quad239+317=556
+\]
+is a twin-assisted replacement using the left-hand twins $239,241$.
+\end{example}
+
+A different directional property concerns the new representation, without requiring it to arise by the exchange in \eqref{eq:TR}.
+\begin{definition}[Right-hand twin endpoint, $\RTP_n$]
+There exists $(u,v)\in\G_{n+1}$ with $v>n+1$ and either
+\[
+ v+2\in\Po,
+ \quad\text{or}\quad
+ v-2\in\Po\ \text{and}\ v-2>n+1.
+\]
+Thus the right endpoint of a new pair belongs to a twin pair wholly right of the new pivot.
+\end{definition}
+
+\begin{conjecture}[Right-hand twin endpoint]\label{conj:RTP}
+For every $n\ge3$, $D_n\Rightarrow\RTP_n$.
+\end{conjecture}
+
+\begin{proposition}
+Conjecture~\ref{conj:RTP} implies both $\GB$ and $\TP$.
+\end{proposition}
+\begin{proof}
+For Goldbach, use the induction in Theorem~\ref{thm:TRG}: a non-extinction step has a direct continuation, and at an extinction step $\RTP_n$ supplies a new pair. For twins, Theorem~\ref{thm:infiniteD} gives unbounded extinction pivots, and $\RTP_n$ supplies twins with both endpoints greater than $n+1$. Their endpoints are therefore unbounded.
+\end{proof}
+
+For example, at $n=277$, the new pair $137+419=556$ has the right-hand twins $419,421$. These give the next representation $137+421=558$. This establishes $\RTP_{277}$ but does not repair the failed implication to $\RTE_{277}$.
+
+\section{What a converse from Goldbach would require}
+\begin{conjecture}[Proposed conditional implication]\label{conj:GT}
+If binary Goldbach is true, then infinitely many twin primes exist: $\GB\Rightarrow\TP$.
+\end{conjecture}
+This is recorded as a proposed implication, not as a consequence of the preceding theorems. The stronger proposed implication $\GB\Rightarrow\TR$ would suffice. The proved implications are
+\[
+ \TR\Rightarrow\GB,\qquad \TR\Rightarrow\TP.
+\]
+They do not reverse automatically. Goldbach only guarantees some integer $a$ in Proposition~\ref{prop:transition}; it does not restrict $a$ to $-1,0,1,2$.
+
+\begin{proposition}[Residual possibility under finitely many twins]\label{prop:residual}
+Assume $\GB$ and suppose there are only finitely many twin pairs. Then for every sufficiently large prime $n\equiv109\pmod{210}$ there exists an integer $k\ge1$ such that
+\begin{equation}\label{eq:residual}
+ n-(6k+2)\in\Po,\qquad n+(6k+4)\in\Po.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Such prime pivots are unbounded by Dirichlet's theorem. They satisfy $n\equiv19\pmod{30}$, so $D_n$ holds. Also $n\equiv4\pmod7$, giving $7\mid2n-1$; for these large pivots $2n-1>7$. Thus no representation of $2n+2$ involves $3$.
+
+By $\GB$, choose $u\le v$ with $u+v=2n+2$. Both endpoints are $2\pmod3$. Since $n\equiv1\pmod6$ and $u\le n+1$, parity and the residue condition give $u=n-(6k+2)$ for an integer $k\ge0$, and hence $v=n+(6k+4)$. If $k=0$, then $n-2,n$ are twins. For $n$ beyond all twin endpoints, this is impossible. Hence $k\ge1$.
+\end{proof}
+
+Proposition~\ref{prop:residual} is a conditional consequence, not a contradiction. To prove Conjecture~\ref{conj:GT} by this route, one would need an additional result excluding \eqref{eq:residual} for at least one suitable pivot under the finite-twin assumption. No such result is proved here.
+
+For illustration, $109+109=218$ can be replaced by $89+131=220$, with movements $(-20,22)$. Neither $89$ nor $131$ has a twin neighbour, since $87,91,129,133$ are composite. Other representations at this pivot do involve twins. The example shows that a particular successful replacement need not use twins; it does not refute any proposed universal implication between the classical conjectures.
+
+\section{Earlier pivots, six-step transport, and pooled counts}
+\begin{lemma}[Exclusion of some crossing-out primes]\label{lem:transportfactor}
+Suppose $(p,q)\in\G_{n-h}$ and a prime $r$ divides $q+2h$. If $r\mid h$, then $r=q$. In particular, if $q>\sqrt{2n}$ and $q+2h$ is composite, its least prime factor is at most $\sqrt{2n}$ and does not divide $h$.
+\end{lemma}
+\begin{proof}
+The two divisibilities imply $r\mid q$, so primality gives $r=q$. A composite $q+2h=2n-p<2n$ has a prime factor at most $\sqrt{2n}$, excluding that exception when $q>\sqrt{2n}$.
+\end{proof}
+
+\begin{conjecture}[Six-step transport]\label{conj:six}
+For every $n\ge7$, there exists $p\in\Po$ such that
+\[
+ p+6\in\Po,\qquad 2n-6-p\in\Po.
+\]
+\end{conjecture}
+This transports a representation at $n-3$ to one at $n$. It implies $\GB$ after the finite cases below $14$ are checked. The lower limit is intentional: at $n=6$, the sole old pair is $3+3=6$ and both increments by $6$ equal $9$.
+
+\begin{proposition}[Local admissibility of six-step transport]
+Set $M=2n-6$. For a prime $r$, the residues of $p$ making at least one of $p,p+6,M-p$ divisible by $r$ are
+\[
+ 0,-6,M\pmod r.
+\]
+Their number $\nu_r$ is
+\[
+\begin{array}{c|c}
+\text{condition}&\nu_r\\\hline
+r=2&1\\
+r=3,\ 3\mid n&1\\
+r=3,\ 3\nmid n&2\\
+r\ge5,\ r\mid n(n-3)&2\\
+r\ge5,\ r\nmid n(n-3)&3
+\end{array}
+\]
+In particular, $\nu_r<r$ for every prime $r$.
+\end{proposition}
+\begin{proof}
+For $r=2,3$, the residues $0,-6$ coincide. For $r\ge5$ they differ, and the third residue coincides with one of them exactly when $M\equiv0$ or $M\equiv-6$, equivalent to $r\mid n-3$ or $r\mid n$. This gives the table.
+\end{proof}
+CRT consequently gives $\prod_{r\le z}(r-\nu_r)>0$ surviving classes in a full period modulo $\prod_{r\le z}r$. It does not guarantee a survivor in $3\le p\le M-3$. Moreover, prime values equal to a sieving prime must be treated as exceptions when translating divisibility avoidance to primality.
+
+For $H\ge1$, define
+\begin{align}
+ w_H(r)&=\#\{h:1\le h\le H,\ r-2h\in\Po\},\\
+ T_H(n)&=\sum_{\substack{3\le r\le2n-3\\r\in\Po}}
+ w_H(r)\ind_{\Po}(2n-r).
+\end{align}
+A positive summand supplies a transport from $n-h$ to $n$.
+
+\begin{proposition}[Full-window identity]\label{prop:weighted}
+For $n\ge4$,
+\begin{equation}\label{eq:weighted}
+ T_{n-3}(n)=\sum_{(p,r)\in\G_n}(\pi(r)-2),
+\end{equation}
+and $T_{n-3}(n)>0$ if and only if $\G_n\ne\varnothing$.
+\end{proposition}
+\begin{proof}
+For $3\le r\le2n-3$, every odd prime below $r$ is of the form $r-2h$ with $1\le h\le n-3$. There are $\pi(r)-2$ such primes, proving \eqref{eq:weighted}. Positivity implies a representation. Conversely, any representation of $2n\ge8$ has an endpoint $r\ge5$, whose predecessor $3$ gives a positive weight.
+\end{proof}
+For instance, $g(100)=8$ but $T_{97}(100)=370$. Different earlier states can feed the same target pair. This identity explains why abundance of available gaps alone is not an independent lower bound for representations at a specified pivot.
+
+\section{Sieve accounting and related results}
+For $n\ge3$, let $L_n=\Po\cap[3,n]$. For each odd prime $r\le\sqrt{2n-3}$, define
+\[
+ A_r(n)=\{p\in L_n:2n-p\text{ is composite with least prime factor }r\}.
+\]
+\begin{proposition}[Exact disjoint sieve accounting]
+\begin{equation}\label{eq:sieve}
+ g(n)=\pi(n)-1-\sum_{\substack{r\le\sqrt{2n-3}\\r\in\Po}}|A_r(n)|.
+\end{equation}
+Every prime divisor of an odd composite $q\le2n-3$ is less than $n$.
+\end{proposition}
+\begin{proof}
+Each $p\in L_n$ contributes exactly one unordered representation if its complement is prime; otherwise it belongs to exactly one set $A_r(n)$. There are $\pi(n)-1$ possible left primes. Every composite complement has a least prime factor at most $\sqrt{2n-3}$, proving \eqref{eq:sieve}. Finally, if $r\mid q$ and $q$ is odd composite, $q/r$ is an odd integer at least $3$, so $r\le q/3<n$.
+\end{proof}
+Thus the fact that all crossing-out primes lie left of the pivot is included in the exact accounting. Positivity still requires a strict bound on their collective coverage. No such bound is deduced here from earlier representations.
+
+Two related results motivate the formulations. First, if $g_1<g_2<\cdots$ are the even integers representable as sums of two primes, the result attributed to Baker, Harman, Jia and Pintz, as presented in \citet[Section 14]{Pintz2009}, gives
+\[
+ g_{j+1}-g_j\ll g_j^{21/800}.
+\]
+It controls the distance to another successful pivot, but does not supply a representation at the next pivot or an aligned twin pair.
+
+Second, the paired Jacobsthal function of \citet{ZillerMorack2017} measures the longest obstruction to simultaneous coprimality along paired progressions. Their Proposition 3.2 proves a sufficient implication to Goldbach from a conjectured bound $h_2(k)<p_k^2-p_k$, where $h_2(k)=j_2(p_k\#)$. That bound is not established in their paper. Reflecting $(n-d,n+d)$ to $(d-n,d+n)$ preserves divisibility and converts the symmetric sieve into a paired progression. This is a structural connection, not a proof of the replacement conjectures above.
+
+\section{Reproducible finite computations}\label{sec:experiment}
+The independent dependency-free script \texttt{verify.mjs} constructs a
+dense Eratosthenes sieve through $2{,}000{,}010$. It checks every integer
+pivot through $10{,}000$ using explicit old and new representation sets,
+retaining diagonal pairs and both exchange orientations. It separately
+checks the residue-specific conjecture through $10^6$ by scanning
+\emph{cousin} bases $c$ and testing $t=2n-2-c$. Its machine-readable
+output is \texttt{verification.json}.
+
+The standalone C++17 program \texttt{goldbach\_rescue\_scan.cpp} uses
+one bit per odd integer in an Eratosthenes sieve through $2N+2$,
+where $N$ is the user-selected pivot bound (default $10^9$).
+It checks \emph{every} $4\le n\le N$ as follows:
+\begin{enumerate}[label=(\roman*)]
+\item If $n\equiv1\pmod3$ and $2n-3$ is composite, search for
+      $C(n)>0$, without first assuming $\G_n\ne\varnothing$.
+\item If $n\not\equiv1\pmod3$, search for a direct continuation by
+      enumerating lower twin members $t$ and testing $2n-t$ for
+      primality. If none exists, check explicitly whether
+      $\G_n\ne\varnothing$. Only then is $n$ a nonmodular extinction
+      target requiring a quartet.
+\item For a quartet, try precomputed twin bases $t\le10^6$ and cousin
+      bases $c\le10^6$. If neither works, scan the \emph{entire}
+      remaining interval $t,c>10^6$, testing the four prime values.
+      Thus a finite cutoff cannot generate a false counterexample.
+\end{enumerate}
+The boundary cases $3$ and $5$ are handled by direct primality tests,
+not discarded by the modulo-$3$ argument. The program stops at the
+first genuine failure and prints its pivot, a check for an old
+representation, and a representation of the next even number if one
+exists. With four threads the bit sieve occupied $119.2$ MiB at
+$N=10^9$; the particular run recorded in
+\texttt{verification\_billion.txt} took $31.28$ seconds including
+sieve construction. Timings depend on hardware and load.
+
+\begin{center}
+\begin{tabular}{@{}p{0.60\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Check & Result\\
+\midrule
+Direct-extinction pivots, $3\le n\le10{,}000$ & $2{,}197$\\
+Failures of $\TR$ among them & None\\
+Failures of $\RTE_n$ among them & $277,676,1012,1342$\\
+Failures of $\RTP_n$ among them & None\\
+Six-step transport, $7\le n\le1{,}000{,}000$ & No failures in $999{,}994$ cases\\
+\bottomrule
+\end{tabular}
+\end{center}
+The $10{,}000$-pivot figures above come from the direct
+representation-set enumerator. The following larger-range figures
+are cumulative output of the separate C++ program:
+\begin{center}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Maximum pivot $N$ & Residue-specific targets & Other extinctions
+& Rescue failures\\
+\midrule
+$10^6$ & $258{,}814$ & $0$ & $0$\\
+$10^7$ & $2{,}697{,}854$ & $0$ & $0$\\
+$10^8$ & $27{,}793{,}376$ & $0$ & $0$\\
+$10^9$ & $284{,}220{,}751$ & $0$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+At $10^9$, the first-stage small-pattern search found a quartet
+for every target, so there were no exhaustive fallbacks. The largest
+number of small candidates examined at one pivot was $2034$.
+The one-million-pivot result is independently reproduced by
+\texttt{verify.mjs}, which uses a different, byte-per-integer sieve
+and cousin-first enumeration. Neither computation proves the
+universal conjectures.
+
+To repeat the billion-pivot experiment on a machine with a C++17
+compiler and roughly $120$ MiB available for the sieve, use:
+\begin{verbatim}
+g++ -O3 -march=native -std=c++17 -pthread \
+  goldbach_rescue_scan.cpp -o goldbach_rescue_scan
+./goldbach_rescue_scan 1000000000 --threads 4 \
+  --progress 250000000 --samples 8
+\end{verbatim}
+The range is inclusive and the output prints both the number of
+candidate pivots and any counterexample. The source accepts
+\texttt{--mode residue} or \texttt{--mode general} to test either
+formulation alone, as well as \texttt{--small-bound} to exercise
+the exhaustive fallback.
+The absence of extinction at $n=3,4$ means that counting from $5$ instead gives the same total. The largest least working $p$ in the six-step search was $2281$, at $n=940132$:
+\[
+ 2281+1877977=1880258,\qquad
+ 2287+1877977=1880264.
+\]
+The first six observed extinction transitions admit the following right-hand exchanges:
+\begin{center}
+\begin{tabular}{@{}ccc@{}}
+\toprule
+Pivots & Old pair & New pair\\
+\midrule
+$19\to20$ & $7+31$ & $11+29$\\
+$34\to35$ & $7+61$ & $11+59$\\
+$40\to41$ & $7+73$ & $11+71$\\
+$49\to50$ & $37+61$ & $41+59$\\
+$61\to62$ & $13+109$ & $17+107$\\
+$64\to65$ & $19+109$ & $23+107$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Example~\ref{ex:277} explains why this directional pattern does not persist universally.
+
+\section{Logical status and remaining questions}
+The exact identities, modulo-$3$ propositions, infinitude of direct extinction, finite endpoint exclusion, four-prime equivalence, local admissibility, and conditional implications from the replacement conjectures have proofs in this note. The universal claims $\TR$, Conjecture~\ref{conj:strong}, $\RTP$, and six-step transport remain conjectural. The universal right-hand exchange claim is disproved by finite examples.
+
+The proposed implication $\GB\Rightarrow\TP$ remains unproved here. Under a hypothetical finite set of twins, the CRT argument eliminates twin-assisted exchanges at infinitely many extinction pivots; it does not eliminate all larger-gap exchanges. Establishing that at least one of those pivots admits no larger-gap replacement would complete a contradiction, but that assertion is an additional missing result, not a consequence of the modular analysis.
+
+The principal proved conditional conclusion is
+\[
+ \boxed{\TR\ \Longrightarrow\ \GB\ \text{and}\ \TP.}
+\]
+It formalizes the proposed rescue mechanism while keeping its unproved existence requirement explicit.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

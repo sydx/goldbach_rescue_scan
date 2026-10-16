@@ -1,0 +1,175 @@
+{
+  "method": "Exact Eratosthenes sieve; exhaustive integer ranges",
+  "sieveBound": 2000010,
+  "transitions": {
+    "range": [
+      3,
+      10000
+    ],
+    "extinctionCount": 2197,
+    "trFailures": [],
+    "rightExchangeFailures": [
+      277,
+      676,
+      1012,
+      1342
+    ],
+    "rightEndpointFailures": [],
+    "nonModularExtinctions": []
+  },
+  "sixStep": {
+    "range": [
+      7,
+      1000000
+    ],
+    "tested": 999994,
+    "failures": [],
+    "largestLeastP": 2281,
+    "extremalWitness": {
+      "n": 940132,
+      "p": 2281,
+      "q": 1877977,
+      "pPlus6": 2287
+    }
+  },
+  "independentRescueCrosscheck": {
+    "range": [
+      4,
+      1000000
+    ],
+    "residueTargets": 258814,
+    "rescueFailures": [],
+    "otherExtinctions": [],
+    "greatestLeastCousinBase": 42463
+  },
+  "firstDirectionalCounterexample": {
+    "n": 277,
+    "old": [
+      [
+        7,
+        547
+      ],
+      [
+        13,
+        541
+      ],
+      [
+        31,
+        523
+      ],
+      [
+        67,
+        487
+      ],
+      [
+        97,
+        457
+      ],
+      [
+        157,
+        397
+      ],
+      [
+        181,
+        373
+      ],
+      [
+        223,
+        331
+      ],
+      [
+        241,
+        313
+      ],
+      [
+        271,
+        283
+      ],
+      [
+        277,
+        277
+      ]
+    ],
+    "rightCandidates": [
+      {
+        "old": [
+          31,
+          523
+        ],
+        "candidate": [
+          35,
+          521
+        ],
+        "leftIsPrime": false
+      },
+      {
+        "old": [
+          241,
+          313
+        ],
+        "candidate": [
+          245,
+          311
+        ],
+        "leftIsPrime": false
+      },
+      {
+        "old": [
+          271,
+          283
+        ],
+        "candidate": [
+          275,
+          281
+        ],
+        "leftIsPrime": false
+      }
+    ],
+    "new": [
+      [
+        47,
+        509
+      ],
+      [
+        53,
+        503
+      ],
+      [
+        89,
+        467
+      ],
+      [
+        107,
+        449
+      ],
+      [
+        113,
+        443
+      ],
+      [
+        137,
+        419
+      ],
+      [
+        167,
+        389
+      ],
+      [
+        173,
+        383
+      ],
+      [
+        197,
+        359
+      ],
+      [
+        239,
+        317
+      ],
+      [
+        263,
+        293
+      ]
+    ]
+  }
+}
