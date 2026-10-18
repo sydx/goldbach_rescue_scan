@@ -1,0 +1,562 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[margin=28mm]{geometry}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[backend=biber,style=numeric,sorting=nyt]{biblatex}
+\addbibresource{references.bib}
+\hypersetup{colorlinks=true, linkcolor=blue!45!black, citecolor=blue!45!black, urlcolor=blue!45!black}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize Goldbach intersection geometry}
+\fancyhead[R]{\footnotesize Working research manuscript}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\PP}{\mathbb P}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\Qcal}{\mathcal Q}
+\newcommand{\Scal}{\mathcal S}
+\newcommand{\Zcal}{\mathcal Z}
+\newcommand{\Fcal}{\mathcal F}
+\newcommand{\SSer}{\mathfrak S}
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Corr}{Corr}
+\title{\bfseries Goldbach Intersection Geometry and Prime-Pair Correlations\\[4pt]
+  \large Exact Identities, Crossed Bridges, Modular Selection,\newline
+  Singular Series, and Computational Evidence}
+\author{Paul A. Bilokon}
+\date{Working manuscript --- 18 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+For each even integer $2n$, let $S(n)=\{p\in\PP:2n-p\in\PP\}$ be the set of prime summands of its Goldbach representations, and let $I_k(n)=S(n)\cap S(n-k)$. These intersections encode prime pairs of every even separation. We develop exact correspondences, a zero-or-many theorem for nonempty intersection rows, consequences of finite and infinite fixed-gap prime-pair classes, and counterexamples showing why gap recurrence and neighboring-row overlaps alone cannot prove Goldbach. We then study crossed intersections $B_h(n)$ and prove that they are precisely fixed-gap autocorrelations of $S(n)$. On the residue class $n\equiv1\pmod3$ where the summand 3 is unavailable, modulo-3 selection restricts nonexceptional crossed bridges to gaps divisible by six. For gaps $6,12,18$ we derive their four-prime singular series and local modulation modulo 5 and 7, prove exact overlap exclusions and a pair-count conservation law, and provide reproducible computations through $n\le10^6$. There are 258,814 tested extinction indices and no simultaneous zero of the three crossed-bridge counts. The numerical and heuristic observations are explicitly separated from theorems: universal short-gap rescue, the twin-prime conjecture, and the binary Goldbach conjecture remain unproved.
+\end{abstract}
+
+\noindent\textbf{Mathematical status.} All identities and theorems below are established by the accompanying arguments. Numerical claims have the stated finite range and a supplied verification script. Singular-series asymptotics are presented as heuristics unless an external theorem is explicitly cited. An ``even-gap prime pair'' $(q,q+2k)$ need not consist of consecutive primes.
+
+\tableofcontents
+
+\section{Goldbach sets and prime-gap intersections}
+Let $\PP=\{2,3,5,7,\ldots\}$. For $n\ge2$ and $1\le k\le n-2$, put
+\begin{equation}\label{eq:S-I}
+ S(n)=\{p\in\PP:2n-p\in\PP\},\qquad
+ I_k(n)=S(n)\cap S(n-k).
+\end{equation}
+For the discussion of entire rows it will generally suffice to restrict to $1\le k\le n-3$: for $n\ge4$, $I_{n-2}(n)=\varnothing$.
+
+\begin{proposition}[Gap encoding]\label{prop:gapencoding}
+For every admissible $n,k$,
+\begin{equation}\label{eq:gapencoding}
+ p\in I_k(n)\ \Longleftrightarrow\ 
+ \begin{cases}
+ p\in\PP,\\
+ q:=2(n-k)-p\in\PP,\\
+ q+2k\in\PP.
+ \end{cases}
+\end{equation}
+In particular $I_1,I_2,I_3$ encode complementary twin, cousin, and sexy-prime pairs, respectively.
+\end{proposition}
+\begin{proof}
+The conditions $p\in S(n-k)$ and $p\in S(n)$ say precisely that $2(n-k)-p=q$ and $2n-p=q+2k$ are prime.
+\end{proof}
+
+Define the gap class and its counting function by
+\begin{equation}\label{eq:Qk}
+ \Qcal_k=\{q\in\PP:q+2k\in\PP\},\qquad
+ \pi_{2k}(X)=\#\{q\in\Qcal_k:q\le X\}.
+\end{equation}
+The complementary map $p\mapsto 2(n-k)-p$ is a bijection between $I_k(n)$ and those members of $\Qcal_k$ having a prime complement at $2(n-k)$.
+
+\begin{theorem}[The fixed-prime correspondence]\label{thm:three}
+For each $k\ge1$ there is a bijection
+\[
+ \Qcal_k\longleftrightarrow \{n\ge k+3:3\in I_k(n)\},\qquad
+ q\longmapsto \frac{q+2k+3}{2}.
+\]
+Consequently,
+\begin{equation}\label{eq:paircount}
+ \pi_{2k}(X)=
+ \#\left\{k+3\le n\le\floor{\frac{X+2k+3}{2}}:\ 3\in I_k(n)\right\}.
+\end{equation}
+If $\Qcal_k\ne\varnothing$, then
+$\bigcup_{n\ge k+3}I_k(n)=\PP\setminus\{2\}$.
+\end{theorem}
+\begin{proof}
+For $q,q+2k\in\PP$ and $n=(q+2k+3)/2$ we have $2n=3+(q+2k)$ and $2(n-k)=3+q$. The reverse direction is the same calculation. If $\Qcal_k$ contains $q_0$, then for every odd prime $p$, choosing $n=(p+q_0+2k)/2$ gives $p\in I_k(n)$. The prime 2 cannot be in $S(n)$ for $n\ge4$.
+\end{proof}
+
+\begin{theorem}[Leftward spreading criterion]\label{thm:spreading}
+For fixed $k$, the following statements are equivalent:
+\begin{enumerate}[label=(\roman*),topsep=2pt,itemsep=1pt]
+\item $\Qcal_k$ is infinite;
+\item $3\in I_k(n)$ for infinitely many $n$;
+\item $I_k(n)$ contains a prime $p<n$ for infinitely many $n$;
+\item for some $\alpha\in(0,1)$, $I_k(n)$ contains a prime $p\le\alpha n$ for infinitely many $n$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Theorem~\ref{thm:three} proves (i)$\Leftrightarrow$(ii), and (ii) implies (iii) and (iv) along large $n$. For either (iii) or (iv), the complementary lower gap member is $q=2(n-k)-p\to\infty$. Hence infinitely many distinct pairs of gap $2k$ exist.
+\end{proof}
+
+\subsection{Extremal sizes and the horizontal prime-gap coordinate}
+Assume $I_k(n)\ne\varnothing$, and let $q_k$ be the smallest member of $\Qcal_k$. Reflection in \eqref{eq:gapencoding} gives the exact upper bound
+\begin{equation}\label{eq:maxbound}
+ \max I_k(n)\le 2(n-k)-q_k.
+\end{equation}
+This bound is attained for infinitely many $n$, because one may fix $(q_k,q_k+2k)$ and choose any sufficiently large odd prime $p=2(n-k)-q_k$. Thus, even for a finite prime-gap class, the largest members of its surviving intersections grow like $2n$. The minimum, by contrast, detects large members of $\Qcal_k$ and is governed by Theorem~\ref{thm:spreading}.
+
+There is also an unconditional \emph{horizontal} distribution law, in which $n$ and the gap parameter $k$ change together rather than holding $k$ fixed.
+\begin{theorem}[Horizontal asymptotic uniformity]\label{thm:horizontal}
+Let $Q\to\infty$ run through odd primes and set $n=(Q+3)/2$. Then
+\[
+ \#\{1\le k\le n-3:3\in I_k(n)\}=\pi(Q)-2
+ \sim\frac{Q}{\log Q}.
+\]
+For every fixed $0<u<1$,
+\begin{equation}\label{eq:horizcdf}
+ \frac{\#\{1\le k\le u(n-3):3\in I_k(n)\}}{\#\{1\le k\le n-3:3\in I_k(n)\}}
+ \longrightarrow u.
+\end{equation}
+\end{theorem}
+\begin{proof}
+Since $2n=Q+3$, membership $3\in I_k(n)$ is equivalent to $Q-2k$ being an odd prime. As $k$ runs from 1 to $n-3$, it runs through every odd prime below $Q$, giving $\pi(Q)-2$ values. The restriction $k\le u(n-3)$ corresponds to $Q-2k\ge(1-u)Q+O(1)$. The prime number theorem gives $uQ/\log Q+o(Q/\log Q)$ such primes, establishing \eqref{eq:horizcdf}.
+\end{proof}
+
+\begin{proposition}[Sparse modular columns]\label{prop:sparsemod}
+If $3\nmid k$ and $n+k\equiv0\pmod3$, then
+\[
+ I_k(n)\subseteq\{3,\ 2(n-k)-3\}.
+\]
+In particular, $|I_k(n)|\le2$ on this progression, even for arbitrarily large $n$.
+\end{proposition}
+\begin{proof}
+For $p\in I_k(n)$, the complementary pair $q,q+2k$ consists of primes. If $q\ne3$, then $q\equiv2k\pmod3$. Since $p+q=2(n-k)$, we have $p\equiv2n-4k\equiv0\pmod3$, hence $p=3$. If $q=3$, then $p=2(n-k)-3$. (Either candidate may fail the other prime tests.)
+\end{proof}
+A Hardy--Littlewood heuristic predicts that, within \emph{rich} admissible fixed-$k$ rows, the normalized interior locations $p/[2(n-k)]$ become approximately uniform on $[0,1]$. Proposition~\ref{prop:sparsemod} explains why such an assertion cannot hold uniformly over all $n$: entire arithmetic progressions may support at most two endpoint elements. No uniform-in-$n$ interior equidistribution is claimed here.
+
+\subsection{Finite and infinite gap classes}
+\begin{proposition}[Finite-class concentration]\label{prop:finite}
+Suppose $\Qcal_k=\{q_1,\ldots,q_m\}$ is finite and nonempty. Then
+\[
+ I_k(n)=\{2(n-k)-q_i\in\PP:1\le i\le m\},\qquad |I_k(n)|\le m,
+\]
+and every $p\in I_k(n)$ satisfies
+\[
+ \frac{p}{2(n-k)}=1+O_k(n^{-1}).
+\]
+If $H_k(X)=\#\{n\le X:I_k(n)\ne\varnothing\}$, then
+\begin{equation}\label{eq:finiteasympt}
+ H_k(X)\sim\frac{2mX}{\log X}.
+\end{equation}
+For every $L\ge1$ there are arbitrarily large $n$ such that
+$I_k(n)=\cdots=I_k(n+L-1)=\varnothing$.
+\end{proposition}
+\begin{proof}
+The first assertions follow from Proposition~\ref{prop:gapencoding}. For each fixed $q_i$, the complementary prime $2(n-k)-q_i$ ranges over odd integers up to $2X+O_k(1)$, giving $\sim2X/\log X$ hits by the prime number theorem. Intersections of two such sets require prime pairs of fixed nonzero separation; the standard upper-bound sieve bounds these by $O_k(X/\log^2X)$. Inclusion--exclusion over finitely many $q_i$ proves \eqref{eq:finiteasympt}.
+
+For every $i$ and $j\in\{0,\ldots,L-1\}$ choose a distinct odd prime $\ell_{i,j}$. The simultaneous congruences
+$2(n+j-k)-q_i\equiv0\pmod{\ell_{i,j}}$
+are soluble by the Chinese remainder theorem. Taking the resulting $n$ sufficiently large makes all these candidates composite.
+\end{proof}
+\begin{remark}
+A finite gap class gives sparse, widely separated nonempty \emph{intersections}, not necessarily sparse Goldbach rows. The density of $\{n:I_k(n)\ne\varnothing\}$ is zero, even though it is infinite whenever $m\ge1$.
+\end{remark}
+
+By Maynard's bounded-cluster theorem, infinitely many distinct even separations occur infinitely often \cite{Maynard2015}. Moreover, the Polymath8b bound on consecutive-prime gaps implies that at least one $\Qcal_k$ with $1\le k\le123$ is infinite \cite{Polymath2014}. Neither result identifies $k=1,2,$ or $3$ as such a class.
+
+\section{The complete intersection array and Goldbach rows}
+For $n\ge4$ define the support and total mass of the row by
+\begin{equation}\label{eq:D-T}
+ D(n)=\#\{1\le k\le n-3:I_k(n)\ne\varnothing\},\qquad
+ T(n)=\sum_{k=1}^{n-3}|I_k(n)|.
+\end{equation}
+
+\begin{theorem}[Zero or many]\label{thm:zero-many}
+For every $n\ge4$,
+\begin{equation}\label{eq:zero-many}
+ D(n)=0\ \Longleftrightarrow\ S(n)=\varnothing,
+ \qquad D(n)>0\ \Longrightarrow\ D(n)\ge\pi(n-1)-1.
+\end{equation}
+\end{theorem}
+\begin{proof}
+If $2n=p+q$ with $p\le q$, then $q\ge n$. For each odd prime $r<q$, put $k=(q-r)/2$. Then $p+r=2(n-k)$, so $p\in I_k(n)$. The different $r$ yield different $k\in\{1,\ldots,n-3\}$. Their number is $\pi(q-1)-1\ge\pi(n-1)-1$. If no Goldbach representation exists, every $I_k(n)$ is empty.
+\end{proof}
+
+\begin{theorem}[Exact row-mass identity]\label{thm:rowmass}
+For every $n\ge4$,
+\begin{equation}\label{eq:rowmass}
+ T(n)=\sum_{p\in S(n)}\bigl[\pi(2n-p-1)-1\bigr].
+\end{equation}
+If $g(n)$ is the number of unordered Goldbach representations of $2n$, then
+\begin{equation}\label{eq:rowmassbound}
+ T(n)\ge g(n)[\pi(n-1)-1].
+\end{equation}
+\end{theorem}
+\begin{proof}
+For fixed $p\in S(n)$, with complementary prime $q=2n-p$, the admissible $k$ correspond bijectively to odd primes $q-2k<q$. This gives exactly $\pi(q-1)-1$ memberships. Each unordered Goldbach pair has at least one complementary prime $q\ge n$; retaining its contribution yields the inequality.
+\end{proof}
+
+The classical theorem that almost all even numbers are sums of two primes \cite{Estermann1938} therefore shows that for all but $o(X)$ integers $n\le X$,
+\[
+ D(n)\ge\pi(n-1)-1\sim \frac{n}{\log n}.
+\]
+This is an \emph{almost-everywhere} result, not a proof that $D(n)>0$ for every $n$.
+
+\subsection{Why many recurring gap classes are not sufficient}
+Consider the periodic set
+\[
+ A=\{a\ge3:a\bmod26\in\{1,3,7,19\}\}.
+\]
+The set of differences of the four permitted residues contains every even residue modulo 26. Hence $A$ contains infinitely many pairs at \emph{every} prescribed positive even gap. Nevertheless,
+\[
+ A+A\pmod{26}=\{0,2,4,6,8,10,12,14,20,22\}.
+\]
+No positive even integer congruent to $16$, $18$, or $24$ modulo 26 lies in $A+A$. This is a counterexample to the inference from abundant difference patterns to universal additive coverage for general sets. It says nothing directly about the actual prime set.
+
+\subsection{Why gap correlations do not determine sumsets}
+A Fourier explanation complements the periodic counterexample. For an indicator function $a$ on a finite cyclic group, let
+\[
+ C(h)=\sum_x a(x)a(x+h),\qquad G(N)=\sum_x a(x)a(N-x).
+\]
+With the standard finite Fourier transform, one has
+\[
+ \widehat C(\xi)=|\widehat a(\xi)|^2,
+ \qquad \widehat G(\xi)=\widehat a(\xi)^2.
+\]
+Difference correlations record Fourier magnitudes but discard phases; additive representation counts depend on those phases. Even complete knowledge of the former therefore does not, for arbitrary sets, imply additive coverage. This does not rule out an additional prime-specific arithmetic principle.
+
+\section{Neighboring Goldbach rows and their obstruction}
+Write $J(n)=S(n-1)\cap S(n+1)$.
+\begin{proposition}[Three-row obstruction]\label{prop:triple}
+For $n\ge4$,
+\begin{equation}\label{eq:triple}
+ S(n-1)\cap S(n)\cap S(n+1)
+ =\begin{cases}
+ \{2n-5\},&2n-5\in\PP,\\
+ \varnothing,&2n-5\notin\PP.
+ \end{cases}
+\end{equation}
+If $3\mid n$ and $2n-5$ is composite, then $J(n)=\varnothing$.
+\end{proposition}
+\begin{proof}
+For a prime $p$ common to all three rows, the numbers $q-2,q,q+2$ are prime, where $q=2n-p$. Among these three consecutive odd numbers one is divisible by 3, so they must be $3,5,7$. This forces $q=5$ and $p=2n-5$, and conversely this prime works.
+
+For $p\in J(n)$, the two outer complements $q-2,q+2$ are prime. Unless $q=5$, the middle $q$ is a multiple of 3. When $3\mid n$, this forces $p\equiv0\pmod3$ and hence $p=3$; then the lower outer complement is $2n-5$ and must be prime. In the exceptional case $q=5$ the endpoint $p=2n-5$ must be prime as well.
+\end{proof}
+
+Even large neighboring overlaps do not prove a middle Goldbach representation. In fact, with the periodic set $A$ above, take $n=13m+12$. Then $2n\equiv24\pmod{26}$, so its middle additive row is empty, but the $m+1$ choices
+\[
+ p=26a+19,\quad q_-=26(m-a)+3,\quad q_+=26(m-a)+7,
+ \quad 0\le a\le m,
+\]
+satisfy $p+q_-=2n-2$ and $p+q_+=2n+2$. Therefore the two neighboring rows have an overlap of size at least $m+1$. Any rescue theorem for actual primes must use further arithmetic structure.
+
+\section{Crossed bridges and within-row autocorrelations}
+\begin{definition}
+For $1\le h\le n-2$, define the crossed intersection
+\begin{equation}\label{eq:B}
+ B_h(n)=\bigl(S(n-h)+2h\bigr)\cap S(n+h).
+\end{equation}
+\end{definition}
+It is equivalent to the existence of four prime entries
+\begin{equation}\label{eq:rectangle}
+ a,\ a+2h,\ b,\ b+2h\in\PP,
+ \qquad a+b=2n-2h,
+\end{equation}
+with allowed repetitions. The three even targets are
+\[
+ 2n-2h=a+b,\quad
+ 2n=(a+2h)+b=a+(b+2h),\quad
+ 2n+2h=(a+2h)+(b+2h).
+\]
+
+\begin{theorem}[Crossed-bridge identity]\label{thm:autocorr}
+For $1\le h\le n-2$,
+\begin{equation}\label{eq:autocorr}
+ \boxed{B_h(n)=S(n)\cap\bigl(S(n)+2h\bigr)}.
+\end{equation}
+Consequently, if $g_h(a)=\one_{\PP}(a)\one_{\PP}(a+2h)$, then
+\begin{equation}\label{eq:Bconv}
+ \boxed{|B_h(n)|=(g_h*g_h)(2n-2h)},
+\end{equation}
+where the convolution counts ordered pairs of positive integer arguments.
+\end{theorem}
+\begin{proof}
+If $r\in B_h(n)$, then $r=a+2h$, with $a+b=2n-2h$ and $b+2h$ prime. Thus $a$ and $a+2h=r$ both lie in $S(n)$. Conversely, if $a,a+2h\in S(n)$, their Goldbach complements are $b+2h,b$ with $a+b=2n-2h$, giving \eqref{eq:rectangle} and the requisite crossed intersection. The convolution counts precisely the ordered $(a,b)$ satisfying \eqref{eq:rectangle}; each determines a distinct upper endpoint $a+2h$.
+\end{proof}
+
+\begin{corollary}[Parity and infinitude]\label{cor:B-infinite}
+For $n\ge h+2$,
+\[
+ |B_h(n)|\equiv g_h(n-h)\pmod2.
+\]
+Moreover, the class $\Qcal_h$ is infinite if and only if $B_h(n)$ is nonempty for infinitely many $n$.
+\end{corollary}
+\begin{proof}
+The off-diagonal convolution terms in \eqref{eq:Bconv} occur in transposed pairs; only $a=b=n-h$ can remain odd. If $\Qcal_h$ is finite, the two lower primes in \eqref{eq:rectangle} are uniformly bounded, so $n$ is bounded. Conversely, each $a\in\Qcal_h$ gives a diagonal rectangle with $n=a+h$.
+\end{proof}
+\begin{remark}[Diagonal rectangles]
+The diagonal case $a=b$ uses the two \emph{distinct} primes $a,a+2h$ twice, not four distinct primes. Indeed every Goldbach pair $p<q$ yields such a rectangle by taking $h=(q-p)/2$ and $a=b=p$. Requiring some unrestricted crossed bridge is therefore no easier than Goldbach; restrictions on $h$ and/or distinctness are essential for genuinely stronger conjectures.
+\end{remark}
+
+\section{Extinction indices and modulo-3 selection}
+For the remainder, the principal residue class is
+\begin{equation}\label{eq:extinction}
+ n\equiv1\pmod3,\qquad 2n-3\notin\PP,\qquad n\ge7.
+\end{equation}
+We call such an $n$ an \emph{extinction index}, referring only to the unavailable Goldbach summand 3; it is \emph{not} assumed that $S(n)$ is empty.
+
+\begin{proposition}[The modular restriction]\label{prop:mod3-selection}
+If $3\nmid n$, $3\nmid h$, and $B_h(n)\ne\varnothing$, then $2n-3$ is prime. Thus at every index \eqref{eq:extinction}, $B_h(n)=\varnothing$ whenever $3\nmid h$.
+\end{proposition}
+\begin{proof}
+In a nonexceptional pair $a,a+2h\in\PP$ with $3\nmid h$, neither member is divisible by 3, so $a\equiv2h\pmod3$; likewise $b\equiv2h\pmod3$. The equality $a+b=2n-2h$ then gives $n\equiv0\pmod3$, contrary to the hypothesis. Hence $a=3$ or $b=3$. If $a=3$, the fourth prime $b+2h=2n-3$; the case $b=3$ is symmetric.
+\end{proof}
+
+Write $n=3t+1$. At extinction indices all members of $S(n)$ are $1\pmod6$, since a Goldbach representation cannot use 3 and the only nonzero residues modulo 3 summing to 2 are $1+1$. Thus
+\begin{equation}\label{eq:xt}
+ S(3t+1)=\{6a+1:1\le a<t,\ x_a(t)=1\},\qquad
+ x_a(t)=\one_{\PP}(6a+1)\one_{\PP}(6(t-a)+1).
+\end{equation}
+Let $C_j(t)=|B_{3j}(3t+1)|$ for $j=1,2,3$. Theorem~\ref{thm:autocorr} gives
+\begin{equation}\label{eq:Cj}
+ \boxed{C_j(t)=\sum_{a=1}^{t-j-1}x_a(t)x_{a+j}(t)}.
+\end{equation}
+This is the $j$th autocorrelation of the finite binary sequence $(x_a(t))_{1\le a<t}$.
+
+\begin{proposition}[Short gaps and total pair conservation]\label{prop:pairconservation}
+At an extinction index, write $m(t)=|S(3t+1)|=\sum_{a=1}^{t-1}x_a(t)$. Then
+\begin{equation}\label{eq:conservation}
+ \boxed{\sum_{j=1}^{t-2}C_j(t)=\binom{m(t)}2}.
+\end{equation}
+Moreover, $C_1=C_2=C_3=0$ if and only if distinct primes of $S(3t+1)$ differ by at least 24. In that case,
+\begin{equation}\label{eq:packing}
+ m(t)\le\ceil{\frac{t-1}{4}}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Each pair of distinct occupied indices $a<b$ contributes exactly once, to $j=b-a$. If $C_1=C_2=C_3=0$, successive occupied indices differ by at least 4, so a length-$(t-1)$ interval contains at most $\ceil{(t-1)/4}$ of them.
+\end{proof}
+
+\begin{conjecture}[Three-gap extinction rescue]\label{conj:threegap}
+Every sufficiently large extinction index $n=3t+1$ satisfies
+\begin{equation}\label{eq:threegapconj}
+ C_1(t)+C_2(t)+C_3(t)>0.
+\end{equation}
+Equivalently, $S(n)$ contains two distinct prime summands at distance $6$, $12$, or $18$.
+\end{conjecture}
+\noindent This statement is stronger than Goldbach at the specified indices, and its universal version is open.
+
+\section{Local singular series for the three crossed-bridge classes}
+The summand $x_a(t)x_{a+j}(t)$ in \eqref{eq:Cj} requests primality of the four linear forms
+\begin{equation}\label{eq:fourforms}
+ L_1=6a+1,\quad L_2=6(a+j)+1,\quad
+ L_3=6(t-a)+1,\quad L_4=6(t-a-j)+1.
+\end{equation}
+For any prime $\ell\ge5$, let $\nu_\ell(n,j)$ be the number of residue classes $a\pmod\ell$ on which at least one form vanishes.
+
+\begin{proposition}[Exact local root count]\label{prop:nu}
+For $j\in\{1,2,3\}$ and $\ell\ge5$ prime,
+\begin{equation}\label{eq:nu}
+ \nu_\ell(n,j)=
+ \begin{cases}
+ 2,&\ell\mid n,\\
+ 3,&\ell\mid(n-3j)(n+3j),\\
+ 4,&\text{otherwise}.
+ \end{cases}
+\end{equation}
+The cases are mutually exclusive. The corresponding four-prime singular series is
+\begin{equation}\label{eq:SS}
+ \SSer_j(n)=81\prod_{\ell\ge5}
+ \frac{1-\nu_\ell(n,j)/\ell}{(1-1/\ell)^4}.
+\end{equation}
+It can be rewritten as
+\begin{equation}\label{eq:SSfactored}
+ \boxed{\SSer_j(n)=\SSer_0
+ \prod_{\substack{\ell\ge5\\\ell\mid n}}\frac{\ell-2}{\ell-4}
+ \prod_{\substack{\ell\ge5\\\ell\mid(n-3j)(n+3j)}}\frac{\ell-3}{\ell-4}},
+\end{equation}
+where
+\begin{equation}\label{eq:S0}
+ \SSer_0=81\prod_{\ell\ge5}
+ \frac{1-4/\ell}{(1-1/\ell)^4}\approx24.9072.
+\end{equation}
+Every factor is positive.
+\end{proposition}
+\begin{proof}
+Modulo $\ell$, the four roots of \eqref{eq:fourforms} are
+$-1/6$, $-j-1/6$, $t+1/6$, and $t-j+1/6$.
+Since $\ell\ge5$ and $j\in\{1,2,3\}$, roots within each of the first and second pairs never coincide. The two cross-pair collisions arise at $\ell\mid n$, $\ell\mid n-3j$, or $\ell\mid n+3j$; at $\ell\mid n$ there are two disjoint collisions, otherwise only one. These alternatives cannot overlap for such $j,\ell$. For $\ell=2,3$, all four forms equal 1 modulo $\ell$; the product of their usual local factors is $2^4(3/2)^4=81$. Factoring the generic $\nu_\ell=4$ terms gives \eqref{eq:SSfactored}. Absolute convergence of the baseline product follows from each factor being $1+O(\ell^{-2})$.
+\end{proof}
+
+\begin{remark}[The status of the prime-quadruple estimate]
+A Hardy--Littlewood-type heuristic, based on \cite{HardyLittlewood1923}, predicts for fixed $j$ and typical large $t$ that
+\begin{equation}\label{eq:HLpred}
+ C_j(t)\ \approx\ \frac{t\,\SSer_j(3t+1)}{(\log(6t))^4}.
+\end{equation}
+The positivity of $\SSer_j(n)$ does \emph{not} establish $C_j(t)>0$ or a uniform version of \eqref{eq:HLpred}; the latter would require presently unavailable prime-quadruple estimates. The local factor is a prediction of density, not a covering certificate.
+\end{remark}
+
+\subsection{Complementary local biases at 5 and 7}
+From \eqref{eq:SSfactored}, the multipliers at $\ell=5$ relative to the generic $\ell=5$ factor are:
+\begin{center}
+\begin{tabular}{c c c c}
+\toprule
+$n\bmod5$ & Gap 6 ($j=1$) & Gap 12 ($j=2$) & Gap 18 ($j=3$)\\
+\midrule
+0&3&3&3\\
+1&1&2&2\\
+2&2&1&1\\
+3&2&1&1\\
+4&1&2&2\\
+\bottomrule
+\end{tabular}
+\end{center}
+Modulo 7, when $n\not\equiv0\pmod7$ exactly one of the gaps gets a multiplier $4/3$, while the other two get multiplier 1:
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+$n\bmod7$ & Favored gap & Relative multiplier\\
+\midrule
+0&All three&$5/3$ each\\
+1 or 6&12&$4/3$\\
+2 or 5&18&$4/3$\\
+3 or 4&6&$4/3$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Thus arithmetic local factors favor different gaps in different residue classes. They do not imply any deterministic positive-coverage relation between the three $C_j$.
+
+\section{Exact higher-order exclusions and limits of packing}
+\begin{theorem}[Modulo-5 pattern exclusions]\label{thm:mod5pattern}
+At an extinction index $n=3t+1$, the following patterns of occupied indices are impossible in the indicated congruence classes:
+\begin{center}
+\begin{tabular}{@{}l l@{}}
+\toprule
+Required offsets in $\{a+s:x_{a+s}(t)=1\}$ & Impossible when\\
+\midrule
+$\{0,1,2\}$ & $n\equiv1,4\pmod5$\\
+$\{0,1,3\}$ & $n\equiv2,3\pmod5$\\
+$\{0,2,3\}$ & $n\equiv2,3\pmod5$\\
+$\{0,1,2,3\}$ & $5\nmid n$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{theorem}
+\begin{proof}
+Since $6a+1,6(t-a)+1$ are $1\pmod3$, neither can be 5. Reducing the two forms modulo 5 shows that whenever $x_a(t)=1$,
+\begin{equation}\label{eq:aforb}
+ a\not\equiv 4,\ t+1\equiv2n-1\pmod5.
+\end{equation}
+For each residue of $n\pmod5$, the allowed residues of $a$ are obtained by deleting the displayed forbidden residues. Directly testing the four finite patterns in this three- or four-element residue set yields the table.
+\end{proof}
+
+The exclusions affect shared-endpoint six-prime or eight-prime events; they do not preclude $C_1=C_2=C_3=0$. The packing upper bound \eqref{eq:packing} is also too weak to rule out zeros: the predicted order $|S(n)|\asymp n/(\log n)^2$ is eventually far below the packing threshold of order $n$.
+
+\section{Exact computational experiment through one million}
+The accompanying \texttt{verify\_rectangles.py} performs an ordinary prime sieve to $2\cdot10^6+100$ and computes $C_j(t)$ via rounded FFT convolutions of the binary sequences $g_j(a)=f(a)f(a+j)$, where $f(a)=\one_{\PP}(6a+1)$. The identity
+\[
+ C_j(t)=(g_j*g_j)(t-j)
+\]
+follows by setting $b=t-j-a$ in \eqref{eq:Cj}. All relevant convolution coefficients are small integers, and the script also checks selected counts by direct enumeration. Rounded FFT results are not presented as formal certificates independent of the supplied computation.
+
+There are exactly \textbf{258,814} extinction indices $7\le n\le10^6$ according to this sieve, and the following counts of zero events:
+\begin{center}
+\begin{tabular}{@{}l r l@{}}
+\toprule
+Condition & Count & Indices (if more than one count is nonzero)\\
+\midrule
+$C_1=0$ & 16 & Last: $n=1399$\\
+$C_2=0$ & 14 & Last: $n=4027$\\
+$C_3=0$ & 16 & Last: $n=5578$\\
+$C_1=C_2=0$ & 1 & $n=229$\\
+$C_1=C_3=0$ & 2 & $n=19,619$\\
+$C_2=C_3=0$ & 3 & $n=34,82,163$\\
+$C_1=C_2=C_3=0$ & \textbf{0} & None in the tested range\\
+\bottomrule
+\end{tabular}
+\end{center}
+Sample values (all indices in the designated residue/extinction class) are:
+\begin{center}
+\begin{tabular}{@{}r r r r@{}}
+\toprule
+$n$ & $C_1$ & $C_2$ & $C_3$\\
+\midrule
+19&0&2&0\\
+34&1&0&0\\
+82&4&0&0\\
+163&4&0&0\\
+229&0&0&6\\
+277&4&1&4\\
+619&0&6&0\\
+100000&176&160&258\\
+\bottomrule
+\end{tabular}
+\end{center}
+For the 258,814 indices, the first available gap is 6 in 258,798 cases, 12 in 15 cases, and 18 only at $n=229$. The latter has pairs $(19,37)$, $(61,79)$ and $(109,127)$ in $S(229)$, among others.
+
+\subsection{Correlation before and after local normalization}
+For the 234,476 extinction indices $100000\le n\le10^6$, direct Pearson correlations of the three counts are
+\[
+ R_{\mathrm{raw}}=\begin{pmatrix}
+ 1&0.515&0.508\\0.515&1&0.885\\0.508&0.885&1
+\end{pmatrix}.
+\]
+Dividing $C_j$ by $t/(\log(2n))^4$ and by the product of its \emph{non-generic} local multipliers for primes $5\le\ell\le997$ gives
+\[
+ R_{\mathrm{adjusted}}=\begin{pmatrix}
+ 1&0.061&0.057\\0.061&1&0.016\\0.057&0.016&1
+\end{pmatrix}.
+\]
+The strong raw association of gaps 12 and 18 is largely explained by their shared congruence factors. These are \emph{linear} correlations of positive counts, not correlations of rare zero events; small adjusted correlations imply neither stochastic independence nor a proof that triple extinction is impossible.
+
+\section{Relation to established research and open problems}
+Maynard's theorem and Polymath8b produce infinitely recurring fixed-gap classes, but not prescribed gaps 2, 4, or 6 \cite{Maynard2015,Polymath2014}. Estermann's almost-all Goldbach theorem gives density-one nonempty rows \cite{Estermann1938}. The work of Akeno studies small gaps within the actual Goldbach-prime sets $\PP\cap(N-\PP)$ and provides almost-all quantitative bounds of polylogarithmic scale \cite{Akeno2025}; it does not establish a universal bound of 18 for every extinction index.
+
+Our results naturally suggest four distinct problems:
+\begin{enumerate}[topsep=2pt,itemsep=3pt]
+\item \emph{Fixed-gap spreading:} prove infinite recurrence of $3\in I_k(n)$ for a specified $k\in\{1,2,3\}$ (equivalent to the corresponding prime-pair infinitude conjecture).
+\item \emph{Finite-gap crossed covering:} determine whether $C_1+C_2+C_3>0$ eventually, or whether a different finite collection of $B_{3j}$ can be proved always nonempty on extinction indices.
+\item \emph{Joint moments:} analyze mixed moments of $C_1,C_2,C_3$ using six- and eight-prime local configurations; four-prime singular series alone do not control their zero-set intersections.
+\item \emph{Uniform additive covering:} move from rich difference patterns and almost-all nonempty rows to an everywhere lower bound for Goldbach representation counts. Periodic counterexamples show that additional Fourier-phase or arithmetic information is indispensable.
+\end{enumerate}
+
+\section{The earlier backward sexy-prime rescue mechanism}
+For completeness, an alternative mechanism from the same investigation uses a prime pair $(q,q+6)$ and a complementary prime $r$ satisfying
+\[
+ 2n-4=q+r,\qquad 2n+2=(q+6)+r.
+\]
+At $n=3t+1$, put $f_-(a)=\one_{\PP}(6a-1)$ for $a\ge1$. The nonexceptional orientation of such rescues is counted exactly by
+\begin{equation}\label{eq:backward}
+ R_-(t)=\sum_{a=1}^{t-1}f_-(a)f_-(a+1)f_-(t-a).
+\end{equation}
+The crossed rectangle $B_3(3t+1)$ and backward rescue \eqref{eq:backward} are \emph{different} convolution mechanisms: the former involves two pairs whose lower members are $1\pmod3$; the latter uses a pair with lower member $2\pmod3$ and a complementary prime of the same residue, apart from exceptional small cases.
+
+An especially restricted subfamily arises when $q+(q+6)$ is a square, as considered in a related Diophantine setting by Burshtein \cite{Burshtein2018}. Setting $q+q+6=(2u)^2$ gives
+\[
+ q=2u^2-3,\qquad q+6=2u^2+3.
+\]
+Except for $u=2$, simultaneous primality forces $5\mid u$ (reduce modulo 5). These square-centered pairs cannot alone cover all extinction indices: for $t=69+385s$, $s\ge0$, $6t-1$ is composite and every corresponding complementary candidate in \eqref{eq:backward} is composite. Indeed, for $u=2$ the complement $6t-7=11(37+210s)$; for $u=5v$ it is $6t+1-50v^2=5(83+462s-10v^2)$, and it cannot equal 5 since that would imply $v^2\equiv6\pmod{11}$, a quadratic nonresidue. The full sexy-prime class can still rescue these indices.
+
+\section*{Conclusion}
+Goldbach intersections provide an exact two-parameter encoding of even prime gaps and additive representations. Crossed bridges further identify prime-gap autocorrelations \emph{inside} each Goldbach row, with modulo-3 arithmetic selecting the gaps divisible by six on the extinction class. The first three allowed gap classes have positive, complementary local singular series and exhibit no joint zero through one million. The gap between this evidence and a universal proof is precise: current methods do not supply a pointwise positive lower bound for the relevant prime-quadruple convolutions, nor a theorem forbidding simultaneous sparse configurations in every row.
+
+\printbibliography
+\end{document}

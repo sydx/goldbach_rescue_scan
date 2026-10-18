@@ -43,3 +43,33 @@ The article proves exact transition and sieve statements and conditional
 implications of the rescue conjecture. The billion-range computation is
 finite evidence. Neither Goldbach nor the twin-prime conjecture is proved.
 The strictly right-hand exchange is disproved already at pivot 277.
+
+# Goldbach Intersection Geometry and Prime-Pair Correlations
+
+Working research manuscript, 18 October 2026.
+
+## Files
+
+- `goldbach_intersections.tex`: main self-contained LaTeX manuscript.
+- `references.bib`: BibTeX entries; compiled with biblatex+biber.
+- `goldbach_intersections.pdf`: compiled 12-page reading copy.
+- `verify_rectangles.py`: independent prime-sieve and FFT computation for three crossed-bridge counts through n = 1,000,000, direct spot-checks, and local-adjusted correlations.
+- `computational_results.txt`: reproducible output from the supplied verification script.
+
+## Build
+
+From this directory:
+
+    latexmk -pdf -interaction=nonstopmode goldbach_intersections.tex
+
+Uses LaTeX packages including `biblatex` and the `biber` backend.
+
+To reproduce the calculations:
+
+    python verify_rectangles.py
+
+Python dependencies: numpy, sympy.
+
+## Caution
+
+The paper distinguishes mathematical proofs, finite computations, and Hardy--Littlewood-type heuristics. It does not claim to prove Goldbach or the twin-, cousin-, or sexy-prime conjectures.
