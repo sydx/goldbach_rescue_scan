@@ -1,0 +1,778 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{booktabs,array,longtable}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\geometry{margin=27mm}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Sexy-prime bridges and Goldbach transitions}
+\fancyhead[R]{\small Working research note}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\Var}{Var}
+\newcommand{\PP}{\mathbb P}
+\newcommand{\Qcal}{\mathcal Q}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\SSS}{\mathfrak S}
+\newcommand{\Gcal}{\mathcal G}
+\title{\bfseries Sexy-Prime Bridges Across Goldbach Transitions\\[0.3em]
+\large Exact Convolutions, Modular Extinction, Local Sieve Dynamics, and Conditional Covering Criteria}
+\author{Paul A. Bilokon}
+\date{Working note --- 17 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We investigate a proposed rescue mechanism for Goldbach representations at indices
+$n\equiv1\pmod3$ where the exceptional Goldbach summand $3$ is unavailable.
+The proposed rescue uses a prime pair $(q,q+6)$ and a complementary prime $r$,
+so that $q+r=2n-4$ and $(q+6)+r=2n+2$.  Writing $n=3t+1$ reduces the
+problem to positivity of the discrete convolution
+$R(t)=\sum_{a=1}^{t-1}f(a)f(a+1)f(t-a)$, where
+$f(a)=\one_{\PP}(6a-1)$. We give exact gcd identities, the associated
+singular series and its uniform positivity, elementary rough-number bounds,
+finite local-covering certificates, and infinite families of prescribed
+extinction and recovery. A conditional covariance criterion isolates the
+additional additive information required to prove universal rescue.
+Exact modular convolutions verify $R(t)>0$ for $2\le t\le10^6$.
+The universal rescue assertion and the infinitude of sexy-prime pairs
+remain open; the note does not claim a solution of either problem.
+\end{abstract}
+
+\noindent\textbf{Status and conventions.}
+Statements designated \emph{theorem} or \emph{proposition} below have proofs;
+computational statements have explicitly finite scopes; conjectures and
+conditional results are labeled as such.  The word ``sexy'' denotes a
+prime gap of exactly six, not necessarily consecutive primes.
+
+\section{Goldbach intersections and the extinction condition}
+
+Let $\PP$ be the set of positive rational primes. For $n\ge2$ define
+\begin{equation}\label{eq:S}
+ S(n)=\{p\in\PP:2n-p\in\PP\},\qquad
+ I_k(n)=S(n)\cap S(n-k),\quad n>k.
+\end{equation}
+Both members of each Goldbach pair belong to $S(n)$.
+The identity
+\begin{equation}\label{eq:I3}
+ I_3(n)\ne\varnothing
+ \iff \exists\ p,q\in\PP:\quad p+q=2n-6,\quad q+6\in\PP
+\end{equation}
+is immediate, since $p+q=2n-6$ and $p+(q+6)=2n$.
+The gap-six intersection property has been discussed and experimentally
+tested previously; see \cite{GoldbachIntersectionMSE2014}.
+
+\begin{proposition}[Direct modular extinction]\label{prop:direct}
+Let $n\ge7$, $n\equiv1\pmod3$, and suppose that $2n-3$ is composite.
+For every Goldbach representation $2n=p+q$, both $p$ and $q$ are
+$1\pmod3$. Consequently, $p+2$ and $q+2$ are composite.
+\end{proposition}
+\begin{proof}
+The residue of $2n$ modulo $3$ is $2$. If a summand equals $3$,
+the other is $2n-3$, contrary to the assumption that it is prime.
+Thus both primes are nonzero modulo $3$, and the only pair of
+nonzero residues adding to $2$ is $(1,1)$. Each increment by $2$
+is divisible by $3$ and greater than $3$.
+\end{proof}
+
+The failure of this particular continuation does \emph{not} mean Goldbach
+fails at $2n+2$. We study a different, six-unit bridge that may rescue
+the transition.
+
+\begin{definition}[Sexy-prime rescue]\label{def:rescue}
+At an index $n\equiv1\pmod3$, a \emph{backward sexy-prime rescue}
+is a triple of primes $q,q+6,r$ such that
+\begin{equation}\label{eq:bridge}
+ 2n-4=q+r,\qquad 2n+2=(q+6)+r.
+\end{equation}
+The two Goldbach targets are separated by six. Such a triple yields
+$I_3(n+1)\ne\varnothing$.
+\end{definition}
+
+For $n\equiv1\pmod3$, if $r\ne3$ in \eqref{eq:bridge}, then
+$q\equiv r\equiv5\pmod6$. There can also be exceptional representations
+with $r=3$ and $q\equiv1\pmod6$; our main count deliberately
+restricts to the nonexceptional orientation.
+
+\section{Exact convolution and the central conjecture}
+
+Write
+\begin{equation}\label{eq:notation}
+ n=3t+1,\quad M=2n-3=6t-1,\quad
+ f(a)=\one_{\PP}(6a-1),\quad g(a)=f(a)f(a+1)
+\end{equation}
+for positive integers $a$. A lower sexy prime in the relevant orientation
+is $q=6a-1$, with successor $q+6=6a+5$.
+Its complementary candidate in \eqref{eq:bridge} is
+\begin{equation}\label{eq:r}
+ r=M-6a=6(t-a)-1.
+\end{equation}
+Therefore the exact count is
+\begin{equation}\label{eq:convolution}
+ \boxed{R(t)=\sum_{a=1}^{t-1}f(a)f(a+1)f(t-a)
+       =(g*f)(t).}
+\end{equation}
+Here the convolution is over positive indices; the upper limit makes all
+three prime arguments positive.
+
+\begin{conjecture}[Extinction rescue]\label{conj:rescue}
+There is $t_0$ such that, for every $t\ge t_0$,
+\begin{equation}\label{eq:target}
+ f(t)=0\quad\Longrightarrow\quad R(t)>0.
+\end{equation}
+A stronger form asks for $R(t)>0$ for all sufficiently large $t$,
+without restricting to extinction indices.
+\end{conjecture}
+
+\begin{remark}
+Conjecture \ref{conj:rescue} would imply the infinitude of sexy-prime
+pairs. Indeed, if only finitely many eligible $a$ had $g(a)=1$, then
+$R(t)>0$ on a set of positive density would force at least one of
+finitely many translates of the ordinary primes to cover a positive-density
+set of indices, contrary to the prime number theorem. Thus even the weaker
+rescue conjecture lies beyond what is currently known.
+\end{remark}
+
+\section{Divisibility identities peculiar to extinction}
+
+\begin{proposition}[Factor transfer]\label{prop:gcd}
+For $M=6t-1$ and $q=6a-1$,
+\begin{equation}\label{eq:gcd}
+ \boxed{\gcd(M-6a,M)=\gcd(a,M).}
+\end{equation}
+Thus for every prime $\ell\mid M$,
+\begin{equation}
+ \ell\mid(2n-4-q)\quad\Longleftrightarrow\quad
+ \ell\mid a=\frac{q+1}{6}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+$\gcd(M-6a,M)=\gcd(6a,M)=\gcd(a,M)$ because
+$M\equiv-1\pmod6$.
+\end{proof}
+
+\begin{corollary}[The exceptional modulus five]\label{cor:five}
+If $g(a)=1$, then $5\nmid a$. Hence if $5\mid M$,
+no eligible sexy-prime complement $M-6a$ is divisible by $5$.
+\end{corollary}
+\begin{proof}
+If $5\mid a$, then $6a+5$ is a multiple of $5$ exceeding $5$, so
+$f(a+1)=0$. Apply Proposition~\ref{prop:gcd}.
+\end{proof}
+
+A complementary exact description is obtained from the three linear forms
+\begin{equation}\label{eq:forms}
+ L_1(a)=6a-1,\qquad L_2(a)=6a+5,\qquad
+ L_3(a)=6(t-a)-1.
+\end{equation}
+For $\ell\ge5$ with $\ell\mid M$, the forbidden residues for $a$
+are $t,t-1,0\pmod\ell$ respectively (since $6t\equiv1\pmod\ell$).
+For $\ell=5$ two collide; for $\ell\ge7$ they are distinct.
+Consequently the fraction of residue classes compatible with the first
+two forms that also survive the third is
+\begin{equation}\label{eq:extfactor}
+ \begin{cases}
+ 1,&\ell=5,\\
+ (\ell-3)/(\ell-2),&\ell\ge7.
+ \end{cases}
+\end{equation}
+Multiplying the fractions gives the \emph{local model}
+\begin{equation}\label{eq:DM}
+ D(M)=\prod_{\substack{\ell\mid M\\\ell\ge7}}
+       \frac{\ell-3}{\ell-2}
+ \gg \frac{1}{\log\log(3M)}.
+\end{equation}
+For the last inequality, compare each factor to
+$(1-1/\ell)(1-O(\ell^{-2}))$ and use the standard lower bound for
+$\varphi(M)/M$. Equation \eqref{eq:DM} concerns locally admissible
+residues; it is \emph{not} a lower bound on the number of actual
+sexy primes surviving the factors of $M$.
+
+For completeness, the elementary Möbius identity
+\begin{equation}\label{eq:coprime}
+ \#\{1\le a\le A:\gcd(a,M)=1\}
+ = A\frac{\varphi(M)}{M}+O(2^{\omega(M)})
+\end{equation}
+shows that $\gg t/\log\log t$ index values $a<t$ are coprime to $M$.
+They need not satisfy $g(a)=1$.
+
+\section{The singular series: positivity and its limits}
+
+Let $\nu_\ell(t)$ be the number of residue classes $a\pmod\ell$
+annihilating at least one of \eqref{eq:forms}. For $\ell=2,3$, the
+three forms are nonzero in every residue class, and $\nu_\ell(t)=0$.
+For $\ell\ge5$, their zeros are
+\begin{equation}
+ a\equiv6^{-1},\quad -5\cdot6^{-1},\quad
+ t-6^{-1}\pmod\ell.
+\end{equation}
+The first two never coincide; the last coincides with one of them
+precisely when $\ell\mid(6t-2)(6t+4)$.
+Hence
+\begin{equation}\label{eq:nu}
+ \nu_\ell(t)=
+ \begin{cases}
+ 0,&\ell\in\{2,3\},\\
+ 2,&\ell\ge5,\ \ell\mid(6t-2)(6t+4),\\
+ 3,&\ell\ge5,\ \ell\nmid(6t-2)(6t+4).
+ \end{cases}
+\end{equation}
+
+\begin{theorem}[Explicit singular series]\label{thm:series}
+The singular series of the three-form system is
+\begin{equation}\label{eq:series}
+ \boxed{\SSS(t)=27C_3
+  \prod_{\substack{\ell\ge5\\\ell\mid(6t-2)(6t+4)}}
+  \frac{\ell-2}{\ell-3},\qquad
+  C_3=\prod_{\ell\ge5}\frac{1-3/\ell}{(1-1/\ell)^3}>0.}
+\end{equation}
+In particular, $\SSS(t)\ge27C_3$ uniformly in $t$.
+\end{theorem}
+\begin{proof}
+By definition,
+$\SSS(t)=\prod_\ell(1-\nu_\ell(t)/\ell)/(1-1/\ell)^3$.
+The factors for $2$ and $3$ multiply to $8\cdot(27/8)=27$.
+For $\ell\ge5$ with three distinct zeros the factor is that in $C_3$;
+when two zeros coincide its ratio to the generic factor is
+$(\ell-2)/(\ell-3)$. Since the generic factors are
+$1+O(\ell^{-2})$, $C_3$ converges to a strictly positive number.
+\end{proof}
+
+The Hardy--Littlewood heuristic \cite{HardyLittlewood1923} suggests
+\begin{equation}\label{eq:HL}
+ R(t)\sim \SSS(t)\frac{t}{(\log(6t))^3},
+\end{equation}
+uniformly enough in $t$ to ensure positivity. This is \emph{not}
+a proved asymptotic.  Notably the enhancement factors in
+\eqref{eq:series} depend on the two even Goldbach targets
+$6t-2$ and $6t+4$, not on the factorization of the extinction number
+$6t-1$ itself.
+
+\section{An elementary lower bound for rough triples}
+
+An Erd\H{o}s-style primorial estimate proves plentiful local survivors,
+although not primes. Let $N=6t+4$ and put
+\begin{equation}
+ y=\left\lfloor\frac{\log N}{8\log4}\right\rfloor,
+ \qquad P(y)=\prod_{\ell\le y}\ell.
+\end{equation}
+The elementary binomial-coefficient bound $P(y)\le4^{2y}$ implies
+$P(y)\le N^{1/4}$; compare Erd\H{o}s's proof of Bertrand's postulate
+\cite{Erdos1932}.
+Consider $x$ in $[N/4,N/2]$ for which
+\begin{equation}
+ \gcd\bigl(x(x+6)(N-6-x),P(y)\bigr)=1.
+\end{equation}
+
+\begin{proposition}[Simultaneous logarithmic roughness]\label{prop:rough}
+For all sufficiently large even $N$, the number of such integers $x$
+is $\gg N/(\log N)^3$, with an absolute implicit constant.
+\end{proposition}
+\begin{proof}
+For $\ell=2$ the three forms have one forbidden residue and for
+$\ell=3$ at most two. For $\ell\ge5$ there are at most three, hence
+the proportion of admissible residues modulo $P(y)$ is at least
+\[
+ \frac16\prod_{5\le\ell\le y}\left(1-\frac3\ell\right)
+ \ge\frac16\prod_{k=5}^{\lfloor y\rfloor}\frac{k-3}{k}
+ =\frac{4}{m(m-1)(m-2)},\quad m=\lfloor y\rfloor.
+\]
+Counting complete periods inside an interval of length $N/4$ gives
+at least $ND/4-P(y)$ survivors, where $D$ is the displayed local
+density. Since $m\asymp\log N$ and $P(y)\le N^{1/4}$, the result
+follows.
+\end{proof}
+
+With Mertens' theorem the lower bound improves to
+$\gg N/(\log\log N)^3$. These rough integers mostly include
+composites; sieving to $\sqrt N$ lies beyond the complete-period
+argument and encounters the usual sieve parity obstruction.
+The triple-divisor correlations of Goldston and Y\i ld\i r\i m
+\cite{GoldstonYildirim2007} are relevant background, not a
+solution of this problem.
+
+\section{Exact local extinction and finite recovery}
+
+Fix distinct eligible lower sexy primes $Q=\{q_1,\ldots,q_m\}$,
+and let
+\begin{equation}
+ P_z=\prod_{5\le\ell\le z}\ell,\qquad
+ S_z(t;Q)=\{q\in Q:\gcd(6t-2-q,P_z)=1\}.
+\end{equation}
+With $\ell>z$ the next prime,
+\begin{equation}\label{eq:transition}
+ S_\ell(t;Q)=S_z(t;Q)\setminus
+ \{q\in S_z(t;Q):q\equiv6t-2\pmod\ell\}.
+\end{equation}
+This is an exact, one-sided sieve transition, rather than a Markov
+approximation.
+
+Let $H_z(Q)$ be the number of $t\pmod{P_z}$ with
+$S_z(t;Q)=\varnothing$. Let $C_{z,\ell}(Q)$ count those classes with
+nonempty $S_z(t;Q)$ whose elements all have the same residue modulo
+$\ell$. The CRT gives the exact recurrence
+\begin{equation}\label{eq:Hrec}
+ \boxed{H_\ell(Q)=\ell H_z(Q)+C_{z,\ell}(Q).}
+\end{equation}
+Old empty classes have $\ell$ empty extensions; a nonempty class
+can become empty at one extension exactly when its survivors lie in
+one class modulo $\ell$.
+
+\begin{proposition}[Finite local-covering certificate]\label{prop:local}
+For
+\[
+ Q_{16}=\{5,11,17,23,41,47,53,83,101,107,131,167,
+ 173,191,227,233\},
+\]
+we have
+\[
+ \min_{t\bmod P_{19}}|S_{19}(t;Q_{16})|=1,
+ \qquad H_{23}(Q_{16})=2,
+\]
+where $P_{19}=1\,616\,615$ and $P_{23}=37\,182\,145$.
+The two complete-extinction classes modulo $P_{23}$ are
+\[
+ t\equiv24\,004\,568,\quad34\,450\,388\pmod{P_{23}}.
+\]
+\end{proposition}
+\begin{proof}
+This is an exhaustive finite CRT calculation. A reproducible
+bit-mask program is supplied as \texttt{verify\_local.py} in the
+source package. The minimum-one classes modulo $P_{19}$ are
+$t\equiv501473$ (only $q=107$ survives) and
+$t\equiv1371958$ (only $q=233$ survives); the single additional
+root class modulo $23$ in each case gives the two listed extinctions.
+\end{proof}
+
+\begin{remark}
+A fixed finite $Q$ can always be made completely extinct by choosing
+distinct large primes $\ell_i$ and imposing
+$6t-2-q_i\equiv0\pmod{\ell_i}$, using CRT. This does not imply
+that the \emph{full} family of sexy primes fails at that index.
+\end{remark}
+
+\section{Infinite recovery after prescribed finite failures}
+
+\begin{theorem}[Prescribed rescuer after finite extinction]\label{thm:repair}
+Let $q_1,\ldots,q_m,q_*$ be distinct eligible lower sexy primes.
+There are infinitely many extinction indices $n\equiv1\pmod3$ at
+which every $q_i$ fails but $q_*$ succeeds.
+\end{theorem}
+\begin{proof}
+Choose distinct primes $\ell_0,\ell_1,\ldots,\ell_m>3$ so large
+that $\ell_0>q_*+1$ and
+$\ell_i>|q_i-q_*|$ for $i\ge1$. By CRT choose $n$ in one arithmetic
+progression satisfying
+\[
+ n\equiv1\pmod3,\quad
+ 2n-3\equiv0\pmod{\ell_0},\quad
+ 2n-4-q_i\equiv0\pmod{\ell_i}.
+\]
+For sufficiently large $n$, this enforces genuine compositeness of
+the extinction number and of all old complements. Along that
+progression the intended new complement
+$r_*(n)=2n-4-q_*$ is coprime to its common difference: modulo
+$\ell_0$ it is $-1-q_*$, modulo $\ell_i$ it is $q_i-q_*$,
+and it is coprime to $2$ and $3$. Dirichlet's theorem supplies
+infinitely many prime values of $r_*(n)$.
+\end{proof}
+
+A stronger simultaneous-recovery statement follows from the published
+$\mathrm{DHL}^{*}(50;2)$ theorem for admissible families of affine
+forms \cite{Polymath2014,Ford2022}. It is important here not to
+assume the existence of infinitely many sexy primes.
+
+\begin{corollary}[Two later rescuers after the first sixteen fail]
+There are infinitely many extinction indices at which all members of
+$Q_{16}$ fail and at least two distinct eligible sexy primes outside
+$Q_{16}$ succeed.
+\end{corollary}
+\begin{proof}
+Choose 50 explicitly existing sexy primes $q>233$ (for example,
+the first 50 in this class; their existence is a finite primality
+check). Impose composite obstructions on $Q_{16}$ and on $2n-3$
+using distinct auxiliary primes all larger than the 50 chosen
+primes and than $233$. Along the resulting CRT progression, the
+50 complementary affine forms are nonzero modulo each auxiliary
+prime, and modulo $2$ and $3$. At any prime $5\le\ell\le50$ not
+dividing the progression's common difference, the residue class
+corresponding to $q\equiv0\pmod\ell$ is absent, since all 50
+chosen $q$ are prime and greater than $50$. For $\ell>50$ at most
+50 classes are forbidden. Thus the affine forms are admissible.
+The $\mathrm{DHL}^{*}(50;2)$ theorem then provides two primes
+simultaneously for infinitely many parameters, yielding the claim.
+\end{proof}
+
+This infinite-family result proves \emph{possibility of recovery}, not
+recovery at every index. Indeed, no finite set of rescuer pairs covers
+all sufficiently large extinction indices.
+
+\section{Union estimates and additive complements}
+
+For a fixed eligible $q$, put
+\[
+ A_q=\{n\equiv1\ (3):\ 2n-3\text{ composite},\quad
+                       2n-4-q\in\PP\}.
+\]
+\begin{proposition}[Finite unions of rescue sets]\label{prop:union}
+For any fixed distinct eligible $q_1,\ldots,q_m$,
+\begin{equation}\label{eq:union}
+ \#\left([1,X]\cap\bigcup_{i=1}^m A_{q_i}\right)
+ \sim \frac{mX}{\log X}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+For each $q$, the complementary prime lies in the class
+$5\pmod6$ and ranges up to $2X+O_q(1)$; the prime number theorem
+in arithmetic progressions gives $X/\log X$ choices.
+The indices for which $2n-3$ is also prime are
+$O_q(X/\log^2 X)$ by the usual fixed-difference upper-bound sieve.
+The overlap of two distinct rescue sets imposes a pair of primes
+with fixed nonzero difference $q_i-q_j$, again numbering
+$O_{q_i,q_j}(X/\log^2 X)$. Bonferroni's inequalities give
+\eqref{eq:union} for fixed $m$.
+\end{proof}
+
+The word \emph{fixed} is essential: the error constants are not
+uniform enough to let $m$ grow into the covering range. The recent
+conditional Romanov--Selberg analysis of twin-prime Goldbach
+representations in \cite{Pandey2026} is a close analogue of this
+distinction between positive-density coverage and full coverage.
+
+\begin{proposition}[A necessary abundance condition]\label{prop:abundance}
+If Conjecture~\ref{conj:rescue} holds, then the number
+$m(Y)=\#\{q\le Y:q\equiv5\ (6),\ q,q+6\in\PP\}$ obeys
+\begin{equation}\label{eq:weakbound}
+ m(Y)\gg\log Y.
+\end{equation}
+Moreover, applying the additive-complement theorem announced in
+\cite{Radomskii2026} would strengthen this to
+\begin{equation}\label{eq:radbound}
+ m(Y)\gg\log Y\log\log Y.
+\end{equation}
+\end{proposition}
+\begin{proof}
+For the elementary bound, the number of extinction indices
+$n\le X$ is $X/3+O(X/\log X)$. Their rescue representations use
+one $q\le2X$ and one complementary prime $r\le2X$, whence
+$m(2X)\pi(2X)\gg X$. The prime number theorem gives
+$m(2X)\gg\log X$.
+
+For the second assertion, let
+\[
+ \mathcal B=\{0,1,\ldots,5\}\ \cup\
+ \{q+1+j:q\in\Qcal,\ 0\le j\le5\}.
+\]
+For every sufficiently large integer $K$, choose
+$j\in\{0,\ldots,5\}$ such that $T=K-j\equiv5\pmod6$.
+If $T$ is prime, $K=T+j\in\PP+\mathcal B$. Otherwise set
+$n=(T+3)/2$, which is an extinction index, and choose a rescue
+$T=r+(q+1)$. Thus $K=r+(q+1+j)\in\PP+\mathcal B$.
+So $\mathcal B$ is an asymptotic additive complement to $\PP$.
+The theorem of \cite{Radomskii2026} yields
+$B(Y)\gg\log Y\log\log Y$; since $B(Y)\le6+6m(Y)$,
+\eqref{eq:radbound} follows.
+\end{proof}
+
+The new October 2026 result \cite{Radomskii2026} is a preprint.
+Neither \eqref{eq:weakbound} nor \eqref{eq:radbound} reverses into
+universal coverage.
+
+
+\section{Higher-order intersections and lower-tail covering}
+
+The preceding union estimate cannot be extended to a growing family by
+assuming independence.  For a finite set $Q$ of eligible rescuers, write
+$X_z(t)=|S_z(t;Q)|$ and average $t$ over the entire residue system
+modulo $P_z$.  Put
+\[
+ V_z=\prod_{5\le\ell\le z}\left(1-\frac1\ell\right),\qquad m=|Q|.
+\]
+For a nonzero difference $d$ define the finite Euler product
+\[
+ C_z(d)=\prod_{5\le\ell\le z}
+ \begin{cases}
+ \dfrac{\ell}{\ell-1},&\ell\mid d,\\[3pt]
+ 1-\dfrac{1}{(\ell-1)^2},&\ell\nmid d.
+ \end{cases}
+\]
+
+\begin{proposition}[Exact first and second local moments]
+With $Q=\{q_1,\ldots,q_m\}$ as above,
+\begin{align}
+ \mathbb E X_z&=mV_z,\\
+ \mathbb E X_z^2&=mV_z+
+     V_z^2\sum_{i\ne j}C_z(q_i-q_j).
+\end{align}
+Consequently the proportion of residue classes with at least one
+survivor satisfies
+\begin{equation}\label{eq:paley}
+ \Pr(X_z>0)\ge
+ \frac{m^2}{m/V_z+\sum_{i\ne j}C_z(q_i-q_j)}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+For each fixed $q$, one class modulo each $\ell$ is forbidden, so
+$\Pr(q\in S_z)=V_z$. For distinct $q_i,q_j$, their forbidden classes
+coincide modulo $\ell$ exactly when $\ell\mid q_i-q_j$.
+Thus their joint survival density is
+$V_z^2C_z(q_i-q_j)$. Expanding $X_z^2$ gives the second moment.
+Cauchy--Schwarz yields
+$(\mathbb E X_z)^2\le\mathbb E X_z^2\Pr(X_z>0)$.
+\end{proof}
+
+For a larger fixed subfamily $J\subseteq Q$, the exact simultaneous
+survival fraction is
+\begin{equation}\label{eq:highlocal}
+ \Pr(J\subseteq S_z(t;Q))=
+ \prod_{5\le\ell\le z}\left(1-\frac{\nu_\ell(J)}\ell\right),
+\quad
+ \nu_\ell(J)=\#\{q\bmod\ell:q\in J\}.
+\end{equation}
+It can vanish when the chosen rescuers occupy every residue class
+modulo a prime. Formula \eqref{eq:highlocal} describes
+\emph{finite-sieve} intersections, not the joint distribution of
+actual complementary primes.
+
+There is also a direct, one-sided criterion for \emph{complete}
+coverage by a growing family.  For $X\ge1$ define
+\[
+ E_X=\{n\in[X,2X]\cap\mathbb Z:
+      n\equiv1\pmod3,\ 2n-3\text{ composite}\},
+\quad
+ R_B(n)=\sum_{\substack{q\le B\\q\in\Qcal}}
+              \one_{\PP}(2n-4-q),
+\]
+where $\Qcal=\{q\equiv5\pmod6:q,q+6\in\PP\}$ and
+$\one_{\PP}(r)=0$ for $r\le1$.  Set
+\begin{equation}\label{eq:Z}
+ Z_B(X)=\sum_{n\in E_X}e^{-R_B(n)}.
+\end{equation}
+Every uncovered index contributes exactly $1$ to $Z_B(X)$, so
+\begin{equation}\label{eq:Zbound}
+ \#\{n\in E_X:R_B(n)=0\}\le Z_B(X).
+\end{equation}
+
+\begin{theorem}[Conditional exponential lower-tail criterion]
+Suppose there are constants $c,C>0$ and cutoffs $B=B(X)$ such that
+\begin{equation}\label{eq:exphyp}
+ \frac{Z_B(X)}{|E_X|}\le
+ C\exp\left(-c\frac{m_B}{\log X}\right),
+ \qquad m_B=\#(\Qcal\cap[1,B]),
+\end{equation}
+for every sufficiently large $X$. If also
+$m_B\ge(2/c)(\log X)^2$, then every extinction index in
+$[X,2X]$ has a rescuer $q\le B(X)$ for all sufficiently large $X$.
+\end{theorem}
+\begin{proof}
+Equations \eqref{eq:Zbound} and \eqref{eq:exphyp} give
+\[
+ \#\{n\in E_X:R_B(n)=0\}\le
+ CX\exp(-2\log X)=C/X<1.
+\]
+The count on the left is a nonnegative integer, hence zero.
+\end{proof}
+
+The exponential moment itself has the exact expansion
+\begin{equation}\label{eq:Zexpand}
+ Z_B(X)=\sum_{J\subseteq\Qcal\cap[1,B]}
+ (e^{-1}-1)^{|J|}
+ \#\left(E_X\cap\bigcap_{q\in J}A_q\right).
+\end{equation}
+This identity makes clear where uniform higher-order prime-tuple
+information would have to enter. No estimate of the strength
+\eqref{eq:exphyp} is presently known for this family. In particular,
+finite-order Selberg upper-bound estimates do not yield it.
+
+\section{One-sided additive mixing and a conditional theorem}
+
+A more stringent, numerically supported conjecture restricts sexy-prime
+indices to the interior interval
+\begin{equation}
+ J_t=[\lceil t/4\rceil,\lfloor t/2\rfloor]\cap\mathbb Z,
+ \quad R_{\rm mid}(t)=\sum_{a\in J_t}g(a)f(t-a).
+\end{equation}
+This avoids relying on extremely small rescue indices.
+Write
+\[
+ K_t=\sum_{a\in J_t}g(a),\qquad
+ v_t(a)=\Lambda(6(t-a)-1),\qquad
+ \overline v_t=\frac{1}{|J_t|}\sum_{a\in J_t}v_t(a),
+\]
+and define the unnormalized covariance
+\[
+ \mathcal C_t=\sum_{a\in J_t}
+ \left(g(a)-\frac{K_t}{|J_t|}\right)
+ (v_t(a)-\overline v_t).
+\]
+The exact identity is
+\begin{equation}\label{eq:cov}
+ W_t:=\sum_{a\in J_t}g(a)v_t(a)
+       =K_t\overline v_t+\mathcal C_t.
+\end{equation}
+The prime number theorem in the progression $5\pmod6$ gives
+$\overline v_t=3+o(1)$.
+
+\begin{theorem}[Conditional one-sided mixing criterion]\label{thm:cov}
+Suppose for all sufficiently large $t$ that
+\begin{equation}\label{eq:covhyp}
+ \frac{K_t}{\sqrt t\log t}\longrightarrow\infty,
+ \qquad \mathcal C_t\ge-(3-\eta)K_t
+\end{equation}
+for some fixed $\eta>0$. Then $R_{\rm mid}(t)>0$ for every
+sufficiently large $t$, and hence Conjecture~\ref{conj:rescue} holds.
+\end{theorem}
+\begin{proof}
+Equation \eqref{eq:cov} and the assumptions imply
+$W_t\ge(\eta+o(1))K_t$. A nonprime with nonzero von Mangoldt
+weight is a proper prime power. There are $O(\sqrt t)$ such
+numbers among the values $6(t-a)-1$, and their total weight is
+$O(\sqrt t\log t)$. Consequently
+\[
+ R_{\rm mid}(t)\log(6t)
+ \ge W_t-O(\sqrt t\log t)>0
+\]
+for all sufficiently large $t$ by \eqref{eq:covhyp}.
+\end{proof}
+
+Conversely, if $R_{\rm mid}(t)=0$ then
+\begin{equation}\label{eq:failurecov}
+ \mathcal C_t=-3K_t+o(K_t)+O(\sqrt t\log t).
+\end{equation}
+Thus whenever $K_t/(\sqrt t\log t)\to\infty$, a failure requires
+almost complete negative additive covariance. This is a structural
+\emph{necessary condition for failure}, not proof that failures
+cannot occur.
+
+The corresponding exact Fourier representation, with
+$F_t(\alpha)=\sum_{b=1}^{t-1}f(b)e^{2\pi i\alpha b}$ and
+$G_t(\alpha)=\sum_{a=1}^{t-1}g(a)e^{2\pi i\alpha a}$, is
+\begin{equation}\label{eq:fourier}
+ R(t)=\int_0^1F_t(\alpha)G_t(\alpha)
+                  e^{-2\pi i\alpha t}\,d\alpha.
+\end{equation}
+It shows why controlling the frequency of transitions alone does not
+control their \emph{additive alignment}. The binary prime configurations
+here are outside the nondegenerate setting of the Green--Tao linear
+forms theorem \cite{GreenTao2010}.
+
+\begin{proposition}[Second-order transitions are insufficient]
+There are two periodic binary sequences with identical frequencies of
+every length-three word, each with $f(16)=0$, but with different values
+of $\sum_{a=1}^{15}f(a)f(a+1)f(16-a)$.
+\end{proposition}
+\begin{proof}
+Take sequences of period $16$ whose first period is respectively
+\[
+ u=\texttt{0001011100101110},\qquad
+ v=\texttt{0001001011011110}.
+\]
+Direct cyclic enumeration shows that every one of the eight
+three-symbol binary words occurs exactly twice in either sequence.
+With indices starting at $1$, both have $f(16)=0$; the two
+convolutions at $16$ are respectively $0$ and $2$.
+\end{proof}
+
+\section{Exact finite computations and stronger four-prime conjecture}
+
+Our supplied \texttt{verify\_convolution.cpp} uses an exact
+number-theoretic transform modulo $998244353$. Since every convolution
+coefficient under consideration is at most $10^6$, reduction modulo
+this prime loses no information. The resulting statement is strictly
+finite.
+
+\begin{proposition}[Computational certificate, bounded range]\label{prop:comp}
+For every $2\le t\le10^6$, $R(t)>0$. There are exactly
+$793\,498$ indices in this interval with $f(t)=0$, and none has
+$R(t)=0$. The sample values are:
+\begin{center}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$t$ & $2$ & $92$ & $1000$ & $10^4$ & $10^5$\\
+\midrule
+$R(t)$ & $1$ & $16$ & $47$ & $238$ & $1218$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Furthermore $R(10^6)=5608$.
+\end{proposition}
+
+An independent integer-loop computation of the restricted correlation
+finds no extinction-index failures for $2\le t\le10^5$; among
+\emph{all} $t$ in that range the sole restricted failure is $t=38$,
+where $f(t)=1$. Some values are
+\begin{center}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$t$ & $92$ & $1000$ & $10^4$ & $10^5$ & $10^6$\\
+\midrule
+$K_t$ & $8$ & $29$ & $211$ & $1315$ & $9279$\\
+$R_{\rm mid}(t)$ & $4$ & $10$ & $65$ & $279$ & $1321$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The last entry was checked directly at that single $t$.
+
+The even stronger four-prime question considered in our investigation is:
+\begin{conjecture}[Aligned sexy-prime Goldbach pairs]
+For every sufficiently large $n$ there is $d\ge1$ such that
+\[
+ n-d-6,\quad n-d,\quad n+d,\quad n+d+6
+ \quad\text{are all prime}.
+\]
+\end{conjecture}
+Setting $a=n-d-6$ and $b=n+d$ shows that this asks for two
+lower sexy primes $a,b$ with $a+b=2n-6$ and $b-a\ge8$.
+A separate exact modular convolution (source included) gives
+exactly $38$ exceptions for $12\le n\le10^6$, the largest at
+$n=5804$. Thus the proposed threshold $n\ge5805$ is supported
+on this finite range only.  The stronger conjecture implies
+$I_3(n)\ne\varnothing$, but it is not used in our rescue proofs.
+
+\section{Conclusion and open proof obligations}
+
+The established chain is
+\[
+\begin{gathered}
+ \text{modular extinction} \longrightarrow \text{exact convolution}\\
+ \longrightarrow \text{positive local singular series}\\
+ \longrightarrow \text{many rough candidates}.
+\end{gathered}
+\]
+The missing arrow is from local candidate supply to a guaranteed
+\emph{prime} complement. Complete-period CRT arguments cannot provide
+that arrow, and fixed-order transition statistics do not determine
+additive alignments.
+
+The most focused sufficient conditions are the one-sided mixing
+hypotheses of Theorem~\ref{thm:cov}. A stronger analytic approach
+would estimate the minor-arc contribution in \eqref{eq:fourier}
+uniformly in $t$; a combinatorial approach would need a new invariant
+preventing all eligible sexy-prime positions from anti-aligning with
+the complementary prime positions.
+
+\noindent\textbf{Caution.} We prove neither a uniform positive lower
+bound for $R(t)$ nor the existence of infinitely many sexy-prime pairs.
+The results of \cite{Pandey2026,Radomskii2026,Akeno2025} concern
+related but distinct questions and do not imply our conjecture.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

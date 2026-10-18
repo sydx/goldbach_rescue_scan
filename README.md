@@ -44,6 +44,45 @@ implications of the rescue conjecture. The billion-range computation is
 finite evidence. Neither Goldbach nor the twin-prime conjecture is proved.
 The strictly right-hand exchange is disproved already at pivot 277.
 
+# Sexy-prime rescue working note — source package
+
+## Contents
+
+- `sexy_prime_rescue.tex` — LaTeX research note, with precise status of each claim.
+- `references.bib` — verified BibTeX citations.
+- `verify_convolution.cpp` — exact integer-NTT computation of `R(t)` for `2 <= t <= 1000000`.
+- `verify_mid.cpp` — exact direct restricted-convolution test for `t <= 100000` and selected larger inputs.
+- `verify_quadruples.cpp` — exact integer-NTT check of the four-prime strengthening for `12 <= n <= 1000000`.
+- `verify_local.py` — exact CRT bit-mask certificate for 16 lower sexy primes through sieving prime 23.
+
+## Compiling the paper
+
+```sh
+pdflatex sexy_prime_rescue.tex
+bibtex8 sexy_prime_rescue  # or bibtex, if available
+pdflatex sexy_prime_rescue.tex
+pdflatex sexy_prime_rescue.tex
+```
+
+## Running computational checks
+
+```sh
+g++ -O3 -std=c++17 verify_convolution.cpp -o verify_convolution
+./verify_convolution
+
+g++ -O3 -std=c++17 verify_mid.cpp -o verify_mid
+./verify_mid
+
+g++ -O3 -std=c++17 verify_quadruples.cpp -o verify_quadruples
+./verify_quadruples
+
+python verify_local.py  # requires numpy
+```
+
+All finite results in this note are separate from the unproved universal conjectures. The integer-NTT modulus 998244353 exceeds every coefficient relevant to the specified ranges, making the convolutions exact.
+
+Working draft dated 17 October 2026.
+
 # Goldbach Intersection Geometry and Prime-Pair Correlations
 
 Working research manuscript, 18 October 2026.
