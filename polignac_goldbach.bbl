@@ -1,0 +1,79 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{10}
+
+\bibitem{BatemanHorn1962}
+Paul~T. Bateman and Roger~A. Horn, \emph{A heuristic asymptotic formula
+  concerning the distribution of prime numbers}, Mathematics of Computation
+  \textbf{16} (1962), 363--367.
+
+\bibitem{Chen1973}
+Jing~Run Chen, \emph{On the representation of a larger even integer as the sum
+  of a prime and the product of at most two primes}, Scientia Sinica
+  \textbf{16} (1973), 157--176.
+
+\bibitem{Polignac1849}
+Alphonse de~Polignac, \emph{Recherches nouvelles sur les nombres premiers},
+  Comptes Rendus de l'Acad\'emie des Sciences, Paris \textbf{29} (1849),
+  397--401.
+
+\bibitem{Dubner2000}
+Harvey Dubner, \emph{Twin prime conjectures}, Journal of Recreational
+  Mathematics \textbf{30} (1999--2000), no.~3.
+
+\bibitem{Gallagher1976}
+P.~X. Gallagher, \emph{On the distribution of primes in short intervals},
+  Mathematika \textbf{23} (1976), 4--9.
+
+\bibitem{HardyLittlewood1923}
+G.~H. Hardy and J.~E. Littlewood, \emph{Some problems of `{P}artitio
+  numerorum'; {III}: {O}n the expression of a number as a sum of primes}, Acta
+  Mathematica \textbf{44} (1923), 1--70.
+
+\bibitem{Maynard2015}
+James Maynard, \emph{Small gaps between primes}, Annals of Mathematics
+  \textbf{181} (2015), no.~1, 383--413.
+
+\bibitem{MontgomeryVaughan1975}
+H.~L. Montgomery and R.~C. Vaughan, \emph{The exceptional set in {G}oldbach's
+  problem}, Acta Arithmetica \textbf{27} (1975), 353--370.
+
+\bibitem{OEIS_A007534}
+{OEIS Foundation Inc.}, \emph{Sequence {A007534}: Even numbers that are not the
+  sum of a pair of twin primes}, The On-Line Encyclopedia of Integer Sequences,
+  2026, \url{https://oeis.org/A007534}, accessed 19 October 2026.
+
+\bibitem{OliveiraESilva2014}
+Tom{\'a}s Oliveira~e Silva, Siegfried Herzog, and Silvio Pardi, \emph{Empirical
+  verification of the even {G}oldbach conjecture and computation of prime gaps
+  up to $4\cdot 10^{18}$}, Mathematics of Computation \textbf{83} (2014),
+  2033--2060.
+
+\bibitem{Pandey2026}
+Tushar Pandey, \emph{An intermediate conjecture between {G}oldbach and
+  {D}ubner: every even number is the sum of a prime and a twin prime},
+  arXiv:2608.02381 [math.NT], 2026.
+
+\bibitem{Polymath2014}
+D.~H.~J. Polymath, \emph{Variants of the {S}elberg sieve, and bounded intervals
+  containing many primes}, Research in the Mathematical Sciences \textbf{1}
+  (2014), Art. 12.
+
+\bibitem{Vaughan1997}
+R.~C. Vaughan, \emph{The {H}ardy--{L}ittlewood method}, second ed., Cambridge
+  Tracts in Mathematics, vol. 125, Cambridge University Press, Cambridge, 1997.
+
+\bibitem{Zhang2014}
+Yitang Zhang, \emph{Bounded gaps between primes}, Annals of Mathematics
+  \textbf{179} (2014), no.~3, 1121--1174.
+
+\bibitem{Zwillinger1979}
+Dan Zwillinger, \emph{A {G}oldbach conjecture using twin primes}, Mathematics
+  of Computation \textbf{33} (1979), no.~147, 1071.
+
+\end{thebibliography}

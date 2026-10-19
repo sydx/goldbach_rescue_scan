@@ -1,0 +1,2 @@
+m_max=1000000 reset_rows=258813 reset_goldbach_empty=0 reset_nonempty_ancestryfree=0 all_nonempty_ancestryfree=2
+reset_exceptions:

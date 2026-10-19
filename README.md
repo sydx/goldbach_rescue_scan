@@ -193,3 +193,38 @@ Python singular-series prediction script uses `sympy` to obtain primes through 1
 `factorial_cumulant_results.txt`: rows are width, mean count, second factorial cumulant, third factorial cumulant, observed void frequency, naive Poisson void frequency, second-cumulant approximation, third-cumulant approximation.
 
 The finite-sieve product for a set J of candidate indices and prime ell>=7 is `1 - |{+j,-j (mod ell): j in J}|/ell`, when N ranges over the specified progression. Do not interpret finite-sieve survival as certification that candidates are prime.
+
+# Prime-gap types, crossed rescues, and multitype induction
+
+Working mathematical manuscript, 19 October 2026.
+
+## Files
+- `multitype_goldbach.tex`: complete LaTeX source
+- `references.bib`: BibTeX bibliography
+- `multitype_goldbach.pdf`: compiled 10-page PDF
+- `multitype_goldbach.bbl`: resolved bibliography for compiling without BibTeX
+- `figures/type_zero_heatmap.pdf` and `.png`: figure for the manuscript
+- `code/type_induction_scan.py`: FFT-based 13-type scan through r=300,000
+- `code/type_induction_scan_300k.npz`: archived numerical counts, shape (13,300001)
+- `code/verify_exact_examples.py`: direct integer primality and CRT verification for r=92, and exact rational correction factors.
+
+## Compile
+From the package root:
+
+    pdflatex -interaction=nonstopmode multitype_goldbach.tex
+    bibtex8 multitype_goldbach
+    pdflatex -interaction=nonstopmode multitype_goldbach.tex
+    pdflatex -interaction=nonstopmode multitype_goldbach.tex
+
+Standard `bibtex` works instead of `bibtex8` where available. If no BibTeX implementation is installed, the provided `.bbl` file lets pdflatex use the already resolved bibliography.
+
+## Reproduce numerical checks
+Requires Python 3, numpy, scipy, sympy and matplotlib (matplotlib only for figure regeneration).
+
+    python code/verify_exact_examples.py
+    python code/type_induction_scan.py
+
+The FFT-based count scan rounds near-integer convolution results and spot-checks selected coefficients by integer summation. It is finite computational evidence, not a formal proof of all scanned coefficients. The direct verifier uses exact integer arithmetic.
+
+## Mathematical status
+The transition identities, local singular-series factors, cross-type congruence exclusions, and finite-sieve theorem are presented with proofs. The generalized fixed-gap Goldbach conjecture, four-prime asymptotic, and bounded-type renewal conjecture remain unproved. In particular, the manuscript does **not** prove Goldbach's conjecture.

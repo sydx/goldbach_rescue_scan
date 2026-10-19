@@ -1,0 +1,22 @@
+Max r: 1666666 max even 6r: 9999996
+Twin-index count: 58979 cousin-index count: 58621
+Max FFT residual from integer: 1.7053025658242404e-12
+Exactly certified missing r: 0 first: []
+Exactly certified covered r: 1666665
+Indices r with H(r)=1: [2, 92]
+H(2) = 1
+H(3) = 2
+H(4) = 3
+H(5) = 2
+H(92) = 1
+r=92 lower twin / lower cousin witnesses: [(239, 313)]
+H(93) = 8
+H(1000) = 27
+H(10000) = 75
+H(100000) = 283
+H(1666666) = 1637
+r mod5=0: mean H/(r/log^4(6r))=93.189
+r mod5=1: mean H/(r/log^4(6r))=92.953
+r mod5=2: mean H/(r/log^4(6r))=46.199
+r mod5=3: mean H/(r/log^4(6r))=93.069
+r mod5=4: mean H/(r/log^4(6r))=93.444
