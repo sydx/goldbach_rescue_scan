@@ -1,0 +1,36 @@
+stage n | first uncertified m | 6m+2 | buffer D
+     22 |                  10 |   62 |        9
+     23 |                  12 |   74 |       14
+     25 |                  15 |   92 |       21
+     32 |                  15 |   92 |       14
+     37 |                  15 |   92 |        9
+     38 |                  20 |  122 |       23
+     40 |                  20 |  122 |       21
+     43 |                  22 |  134 |       24
+     55 |                  31 |  188 |       39
+    100 |                  54 |  326 |       63
+    500 |                 225 | 1352 |      176
+   1000 |                 477 | 2864 |      432
+   3000 |                1562 | 9374 |     1687
+   5000 |                2712 | 16274 |     3137
+  10000 |                5647 | 33884 |     6942
+  15000 |                8107 | 48644 |     9322
+
+Verified every regular block 2 <= m <= 5000
+Checked positive rescue buffer through stage n=15000
+Minimum buffer (n>=7): (3, 7)
+
+Mean R(m) over 50 <= m <= 5000 by m mod 5:
+0: 30.597
+1: 30.298
+2: 15.882
+3: 30.934
+4: 32.180
+Frontier occupancy for 50 <= n <= 10000:  {0: 905, 1: 251, 2: 8424, 3: 130, 4: 241}
+n=22: maximum=72, actual gaps=[62, 64]
+n=23: maximum=84, actual gaps=[74, 76]
+n=25: maximum=90, actual gaps=[]
+n=32: maximum=108, actual gaps=[92, 94]
+n=37: maximum=132, actual gaps=[92, 94, 116, 118, 120, 122, 124]
+n=38: maximum=144, actual gaps=[122, 124, 134, 136]
+n=40: maximum=144, actual gaps=[122, 124, 134, 136]

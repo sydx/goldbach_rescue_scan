@@ -228,3 +228,32 @@ The FFT-based count scan rounds near-integer convolution results and spot-checks
 
 ## Mathematical status
 The transition identities, local singular-series factors, cross-type congruence exclusions, and finite-sieve theorem are presented with proofs. The generalized fixed-gap Goldbach conjecture, four-prime asymptotic, and bounded-type renewal conjecture remain unproved. In particular, the manuscript does **not** prove Goldbach's conjecture.
+
+# Twin--Cousin Goldbach Representations
+
+Paper author: Paul A. Bilokon
+Date: 21 October 2026
+
+Files:
+- `twin_cousin_goldbach.tex`: complete, editable LaTeX source.
+- `twin_cousin_goldbach.bib`: BibTeX bibliography.
+- `twin_cousin_goldbach.pdf`: compiled eight-page paper.
+- `verify_twin_cousin.py`: standalone Python 3 script (standard library only) that reproduces the finite calculations.
+- `verification_output.txt`: output from the default verification run.
+
+To compile with a standard TeX installation from this directory:
+
+```sh
+pdflatex twin_cousin_goldbach.tex
+bibtex twin_cousin_goldbach
+pdflatex twin_cousin_goldbach.tex
+pdflatex twin_cousin_goldbach.tex
+```
+
+To recompute the finite evidence:
+
+```sh
+python3 verify_twin_cousin.py
+```
+
+The manuscript sharply distinguishes exact theorems and finite numerical verification from the still-open Twin--Cousin Goldbach (TCG) and Twin--Cousin Block (TCB) conjectures. In particular, local admissibility alone is not a prime-existence proof.

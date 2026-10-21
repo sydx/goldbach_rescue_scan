@@ -1,0 +1,366 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue,pdftitle={Twin--Cousin Goldbach Representations and Four-Prime Block Certificates},pdfauthor={Paul A. Bilokon}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Twin--Cousin Goldbach Representations}
+\rhead{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\headheight}{14pt}
+\numberwithin{equation}{section}
+\newtheorem{conjecture}{Conjecture}[section]
+\newtheorem{theorem}[conjecture]{Theorem}
+\newtheorem{proposition}[conjecture]{Proposition}
+\newtheorem{lemma}[conjecture]{Lemma}
+\newtheorem{corollary}[conjecture]{Corollary}
+\newtheorem{remark}[conjecture]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[conjecture]{Definition}
+\newtheorem{example}[conjecture]{Example}
+\newcommand{\PP}{\mathbb P}
+\newcommand{\TCG}{\textup{TCG}}
+\newcommand{\TCB}{\textup{TCB}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\SM}{\mathfrak{S}}
+\title{\bfseries Twin--Cousin Goldbach Representations\\[3pt]
+\large Four-Prime Block Certificates, Modular Restrictions, and Cumulative Rescue Dynamics}
+\author{Paul A. Bilokon}
+\date{21 October 2026\\\small Research note --- conjectural statements distinguished from proven results}
+\begin{document}
+\maketitle
+\begin{abstract}
+We formulate two related conjectures about representations of even integers by genuine prime numbers belonging to twin- and cousin-prime pairs. The \emph{Twin--Cousin Goldbach Conjecture} (TCG) asks for a representation of each even integer at least six as a sum of a twin prime and a cousin prime. The stronger \emph{Twin--Cousin Block Conjecture} (TCB) requires four primes in two prescribed pairs that simultaneously represent four consecutive even integers. We prove the implication \(\TCB\Rightarrow\TCG\), establish exact prime-arrival times in a cumulative Goldbach filtration, derive a finite rescue deadline and an equivalent frontier-buffer criterion, and calculate the complete local divisibility obstruction and its singular series. A congruence restriction modulo five explains a marked asymmetry in the observed rescue process. Explicit deterministic verification establishes TCB for block indices \(2\le m\le5000\), while the dynamic calculation is extended to stage \(n=15000\). No unconditional proof of either conjecture is claimed.
+\end{abstract}
+\noindent\textbf{Keywords:} Goldbach-type problems; twin primes; cousin primes; prime quadruples; admissible linear forms; singular series; arithmetic sieves.\\
+\textbf{MSC 2020:} 11P32, 11N36, 11A41.
+
+\section{Introduction}
+Goldbach's binary problem and the Hardy--Littlewood predictions for prime patterns are central reference points for questions about simultaneous primality \cite{HardyLittlewood1923}. Here we constrain both prime summands to belong to specific, short prime pairs. The resulting question is not merely whether a given even integer is representable, but whether the accumulated supply of \emph{actual} twin and cousin primes is sufficient to certify successive targets.
+
+The purpose of this note is to isolate two conjectures, develop exact identities and a deterministic cumulative construction around them, and state clearly which assertions have been established and which remain open. The block formulation is particularly useful: a single four-prime certificate yields four Goldbach representations and can repair several adjacent omissions simultaneously. The admissibility and singular-series calculations belong to the general tradition of prime-tuple heuristics and sieve theory \cite{SchinzelSierpinski1958,HalberstamRichert1974,Garcia2024}; these heuristics are not invoked as proofs of prime existence.
+
+\section{Two conjectures and their logical relationship}
+\begin{definition}[Twin and cousin prime membership]
+An odd prime \(t\) is a \emph{twin prime} if at least one of \(t-2,t+2\) is prime. An odd prime \(c\) is a \emph{cousin prime} if at least one of \(c-4,c+4\) is prime. We allow \(t=c\) and do not demand that the prime pairs be disjoint.
+\end{definition}
+\begin{conjecture}[Twin--Cousin Goldbach Conjecture, \(\TCG\)]\label{conj:tcg}
+Every even integer \(N\ge6\) possesses a representation
+\begin{equation}\label{eq:tcg}
+N=t+c,
+\end{equation}
+where \(t\) is a twin prime and \(c\) is a cousin prime.
+\end{conjecture}
+
+Except for \((3,5)\), each twin-prime pair has the form \((6a-1,6a+1)\), \(a\ge1\). Except for \((3,7)\), each cousin-prime pair has the form \((6b+1,6b+5)\), \(b\ge1\). These are the \emph{regular pairs} below. The exceptional pairs remain available for \(\TCG\).
+
+\begin{definition}[A four-prime certificate]
+For integers \(a,b\ge1\), call \((a,b)\) a \emph{block certificate} if all four numbers
+\begin{equation}\label{eq:fourforms}
+6a-1,\qquad 6a+1,\qquad 6b+1,\qquad 6b+5
+\end{equation}
+are prime. Its \emph{block index} is \(m=a+b\).
+\end{definition}
+\begin{conjecture}[Twin--Cousin Block Conjecture, \(\TCB\)]\label{conj:tcb}
+For every integer \(m\ge2\), there exist \(a,b\ge1\), with \(a+b=m\), for which \eqref{eq:fourforms} are all prime.
+\end{conjecture}
+
+\begin{proposition}[Four-number certificate identity]\label{prop:quartet}
+A block certificate \((a,b)\), \(a+b=m\), supplies twin--cousin representations for all four even integers
+\begin{equation}\label{eq:block}
+B_m:=\{6m,6m+2,6m+4,6m+6\}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Put \(p=6a-1\) and \(q=6b+1\). Since \(p,p+2\) are twin primes and \(q,q+4\) are cousin primes, their four cross-pair sums are
+\[
+p+q=6m,\quad (p+2)+q=6m+2,\quad p+(q+4)=6m+4,\quad (p+2)+(q+4)=6m+6.
+\]
+Each uses one prime of each permitted kind.
+\end{proof}
+\begin{theorem}[Logical implication]\label{thm:implication}
+The \(\TCB\) conjecture implies \(\TCG\).
+\end{theorem}
+\begin{proof}
+If every \(B_m\) for \(m\ge2\) is certified, their union covers every even integer from \(12\) onward: adjacent blocks overlap at \(6m+6=6(m+1)\). The three remaining even integers have the permitted representations
+\[
+6=3+3,\qquad 8=5+3,\qquad 10=3+7.
+\]
+Here \(3,5\) belong to the twin pair \((3,5)\), and \(3,7\) to the cousin pair \((3,7)\).
+\end{proof}
+\begin{remark}
+The converse is \emph{not established}. TCG permits a separate representation for each even integer and also admits the exceptional pairs. TCB insists that a single pair of regular prime pairs certify an entire quartet. In particular, failure to certify \(B_m\) does not automatically mean that every member of \(B_m\) lacks an individual twin--cousin representation.
+\end{remark}
+
+\section{Exact certificate counts and modular obstructions}
+For \(m\ge2\) define the \emph{certificate count}
+\begin{equation}\label{eq:R}
+R(m):=\sum_{a=1}^{m-1}\one_{\PP}(6a-1)\one_{\PP}(6a+1)
+\one_{\PP}(6(m-a)+1)\one_{\PP}(6(m-a)+5),
+\end{equation}
+where \(\one_{\PP}\) denotes the prime indicator. Thus TCB is exactly the assertion \(R(m)>0\) for every \(m\ge2\). Formula \eqref{eq:R} counts certificates, not the total number of individual Goldbach representations.
+
+\begin{lemma}[Forbidden residues]\label{lem:residues}
+Fix \(m\ge2\) and a prime \(\ell\ge5\). Write \(u\equiv6^{-1}\pmod\ell\). Among the four linear expressions
+\begin{equation}\label{eq:forms}
+L_1(a)=6a-1,\ L_2(a)=6a+1,\ L_3(a)=6(m-a)+1,\ L_4(a)=6(m-a)+5,
+\end{equation}
+the forbidden residue classes of \(a\pmod\ell\) are
+\begin{equation}\label{eq:roots}
+u,\quad -u,\quad m+u,\quad m+5u.
+\end{equation}
+If \(\rho_\ell(m)\) denotes the number of distinct forbidden classes, then
+\begin{equation}\label{eq:rho}
+\rho_\ell(m)=
+\begin{cases}
+3,&\ell\mid m(m+1)(3m+1)(3m+2),\\
+4,&\text{otherwise}.
+\end{cases}
+\end{equation}
+For \(\ell=2,3\), none of the four expressions ever vanishes modulo \(\ell\).
+\end{lemma}
+\begin{proof}
+Solving \(L_j(a)\equiv0\pmod\ell\) yields \eqref{eq:roots}. Any equality of distinct listed residues implies one of the conditions
+\(m\equiv0,-1\pmod\ell\) or \(3m+1\equiv0,\ 3m+2\equiv0\pmod\ell\); conversely each produces an equality. For \(\ell\ge5\) these four conditions are mutually exclusive, so at most one collision occurs. Finally, each \(L_j\) is congruent to \(\pm1\) modulo 2 and to \(\pm1\) modulo 3.
+\end{proof}
+
+\begin{theorem}[Uniform local admissibility]\label{thm:admissible}
+For every \(m\ge2\) and every prime \(\ell\), there is a class \(a\pmod\ell\) on which none of the four forms \eqref{eq:forms} is divisible by \(\ell\). In particular, the four-form family has no fixed local prime obstruction.
+\end{theorem}
+\begin{proof}
+For \(\ell=2,3\) every class is permissible. For \(\ell\ge5\), Lemma~\ref{lem:residues} gives \(\rho_\ell(m)\le4<\ell\). Hence at least one residue survives.
+\end{proof}
+\begin{corollary}[Positive singular series]\label{cor:ss}
+The associated Hardy--Littlewood singular series is
+\begin{equation}\label{eq:ss}
+\SM(m)=81\prod_{\substack{\ell\ge5\\ \ell\ mathrm{prime}}}
+\frac{1-\rho_\ell(m)/\ell}{(1-1/\ell)^4}.
+\end{equation}
+It converges for every fixed \(m\ge2\) and satisfies the uniform lower bound
+\begin{equation}\label{eq:lower}
+\SM(m)\ge S_0:=81\prod_{\substack{\ell\ge5\\ \ell\ mathrm{prime}}}
+\frac{1-4/\ell}{(1-1/\ell)^4}>0.
+\end{equation}
+\end{corollary}
+\begin{proof}
+At 2 and 3 there are no roots; the two local factors multiply to \(16(3/2)^4=81\). For \(\ell\ge5\), replacing \(\rho_\ell(m)\in\{3,4\}\) by 4 lowers the local factor. The resulting generic factor is \(1+O(\ell^{-2})\) and is strictly positive, so its infinite product converges to a positive number. For fixed \(m\), only finitely many primes divide the fixed nonzero product in \eqref{eq:rho}, ensuring convergence of \eqref{eq:ss}.
+\end{proof}
+
+\begin{proposition}[The restrictive residue class modulo five]\label{prop:five}
+If \(m\equiv2\pmod5\) and \((a,m-a)\) is a block certificate with \(a\ge2\), then \(a\equiv0\pmod5\). For each other class of \(m\pmod5\), two residue classes of \(a\pmod5\) are locally admissible; for \(m\equiv2\) only one survives.
+\end{proposition}
+\begin{proof}
+Modulo five the forbidden residues are \(1,-1,m+1,m\). Their complement is \(\{0\}\) when \(m\equiv2\pmod5\), and has size two otherwise. If \(a\ge2\), the four numbers in \eqref{eq:forms} all exceed five except possibly \(6a-1\) when \(a=1\); thus a certificate cannot exploit a factor equal to the prime 5. The restriction follows.
+\end{proof}
+\begin{remark}
+The exception \(a=1\) is genuine, not an artefact: \((a,b)=(1,21)\) certifies \(m=22\) using the primes \(5,7,127,131\). The modulo-five restriction concerns potential \emph{composite divisibility}, not an absolute ban on a value equal to five. The local factor at five for \(m\equiv2\) is half that for the other four residue classes.
+\end{remark}
+
+\section{Cumulative prime arrivals and rescue dynamics}
+Fix an integer stage \(n\ge3\). Call a prime \emph{observed by stage \(n\)} if it occurs as an addend in a Goldbach decomposition of at least one of \(6,8,\ldots,2n\).
+\begin{lemma}[Exact observation cutoff]\label{lem:cutoff}
+The observed primes at stage \(n\) are precisely the odd primes \(p\le2n-3\).
+\end{lemma}
+\begin{proof}
+If \(p\le2n-3\) is an odd prime, then \(p+3\le2n\) is even, and \(p+3=p+3\) is a Goldbach representation. Conversely, every Goldbach addend of an even number at most \(2n\) is at most \(2n-3\), as the other odd prime is at least three.
+\end{proof}
+\begin{proposition}[Arrival times]\label{prop:arrival}
+A regular twin pair \((6a-1,6a+1)\) is fully observed first at stage \(3a+2\). A regular cousin pair \((6b+1,6b+5)\) is fully observed first at stage \(3b+4\). Hence the certificate \((a,b)\) arrives at
+\begin{equation}\label{eq:tau}
+\tau(a,b)=\max\{3a+2,\ 3b+4\}.
+\end{equation}
+If \(a+b=m\), then \(\tau(a,b)\le3m+1\).
+\end{proposition}
+\begin{proof}
+The cutoff of Lemma~\ref{lem:cutoff} must reach the larger member of each pair. Solving \(6a+1\le2n-3\) and \(6b+5\le2n-3\) gives the asserted stages. The deadline follows from \(1\le a,b\le m-1\).
+\end{proof}
+
+\begin{definition}[First certification and first hole]
+Let \(\tau_m\) be the minimum of \(\tau(a,b)\) over all block certificates with \(a+b=m\), taking \(\tau_m=+\infty\) if no such certificate exists. Let
+\begin{equation}\label{eq:H}
+H(n)=\min\{m\ge2:\tau_m>n\},\qquad D(n)=3H(n)+1-n.
+\end{equation}
+Here \(H(n)\) is the first \emph{uncertified block index}, and \(D(n)\) is its deadline buffer. These are not defined as the first missing individual Goldbach representation.
+\end{definition}
+\begin{theorem}[Exact frontier criterion]\label{thm:frontier}
+The following two statements are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=22pt]
+\item The Twin--Cousin Block Conjecture holds for every \(m\ge2\).
+\item \(D(n)>0\) at every integer stage \(n\ge7\).
+\end{enumerate}
+Whenever these conditions hold, every even target \(2n\) is twin--cousin representable.
+\end{theorem}
+\begin{proof}
+Assume (i), and take \(m=H(n)\). Since this block has not arrived, \(n<\tau_m\le3m+1\), by Proposition~\ref{prop:arrival}; hence \(D(n)>0\).
+Conversely, assume (ii), and fix \(m\ge2\). At stage \(n=3m+1\), the inequality \(3H(n)+1-n>0\) implies \(H(n)>m\), so block \(m\) has been certified. Therefore (i) holds.
+If \(n\ge7\), then \(D(n)>0\) implies \(n\le3H(n)\). The blocks \(B_2,\ldots,B_{H(n)-1}\), all certified, cover the even numbers from 12 through \(6H(n)\), which include \(2n\) (and \(H(n)\ge3\) for \(n\ge7\)). The smaller cases follow from the representations in Theorem~\ref{thm:implication} and \(12=5+7\).
+\end{proof}
+\begin{proposition}[Frontier recurrence and critical rescue]\label{prop:recurrence}
+Write \(\Delta H(n)=H(n+1)-H(n)\ge0\). Then
+\begin{equation}\label{eq:recurrence}
+D(n+1)=D(n)-1+3\Delta H(n).
+\end{equation}
+If \(D(n)=1\), maintaining \(D(n+1)>0\) requires certification of the current earliest missing block at the next stage.
+\end{proposition}
+\begin{proof}
+Subtract \eqref{eq:H} at consecutive stages. If \(D(n)=1\) and \(\Delta H(n)=0\), then \(D(n+1)=0\). Conversely a positive integer \(\Delta H(n)\) restores positivity.
+\end{proof}
+\begin{remark}[Arrival clock]
+Apart from the small exceptional primes, stage \(n\equiv0\pmod3\) introduces no new prime: \(2n-3\) is a composite multiple of three. At stage \(3k+1\), a new cousin pair can complete; at stage \(3k+2\), a new twin pair can complete. These events can share the prime \(6k-1\). This observation provides a deterministic update schedule but does \emph{not} by itself prove that a rescue must occur at a critical deadline.
+\end{remark}
+
+\section{Examples of simultaneous rescue}
+\begin{example}[Closing 62 and 64 at stage 23]\label{ex:62}
+The newly observed twin pair \((41,43)\), with the already observed cousin pair \((19,23)\), provides the certificate \((a,b)=(7,3)\), \(m=10\):
+\[
+60=41+19,\quad62=43+19,\quad64=41+23,\quad66=43+23.
+\]
+The two missing interior even numbers are repaired at the same stage.
+\end{example}
+\begin{example}[Rescue in the restrictive residue class]\label{ex:134}
+For \(m=22\equiv2\pmod5\), the certificate \((a,b)=(5,17)\) uses the primes
+\[
+29,\quad31,\quad103,\quad107,
+\]
+and arrives at stage \(\max(17,55)=55\). It gives
+\[
+132=29+103,\quad134=31+103,\quad136=29+107,\quad138=31+107.
+\]
+A second certificate, \((a,b)=(1,21)\), uses \((5,7)\) and \((127,131)\) and arrives later, at stage 67. Stage 67 is the deadline \(3m+1\).
+\end{example}
+\begin{example}[One arrival, several old holes]
+The twin pair \((71,73)\) first arrives at stage 38. With cousin pairs \((19,23)\) and \((43,47)\), it certifies the distinct block indices \(m=15\) and \(m=19\). An incoming twin pair can therefore perform several repairs at once.
+\end{example}
+
+\section{Computational evidence}
+We used an ordinary Eratosthenes sieve to determine primality through 30,010, enumerated all regular twin and cousin pairs in that range, and tested \(R(m)\) in \eqref{eq:R} for every \(2\le m\le5000\). For such \(m\), no candidate exceeds \(6(m-1)+5\le29{,}999\), so this bound is sufficient for an exhaustive finite test. The calculation was independently expressed as a stage-by-stage arrival process through \(n=15000\), where the observed prime cutoff is \(29{,}997\). An accompanying short Python program reproduces the tabulations.
+
+\begin{proposition}[Finite verification, computational]\label{prop:finite}
+Direct primality testing yields \(R(m)>0\) for every integer \(2\le m\le5000\). The associated deadline buffer remains strictly positive for every computed stage \(7\le n\le15000\).
+\end{proposition}
+\begin{proof}[Verification method]
+For each \(m\), inspect \(a=1,\ldots,m-1\), put \(b=m-a\), and increment \(R(m)\) precisely when the four sieve entries in \eqref{eq:fourforms} are prime. To calculate arrival times, record the minimum \(\tau(a,b)\) among the successful pairs for each \(m\). Updating \(H(n)\) from these minima gives \(D(n)\) exactly by \eqref{eq:H}. This is a finite exhaustive procedure; the statement is computer-verified, not an analytic theorem extending beyond the stated bounds.
+\end{proof}
+
+\begin{table}[ht]
+\centering
+\caption{Selected stages: the first uncertified block and its remaining rescue buffer. The entry \(6H+2\) is the first interior even target \emph{not certified by the regular block mechanism}; exceptional-pair representations are accounted for separately.}
+\label{tab:frontier}
+\small
+\begin{tabular}{rrrr}
+\toprule
+Stage \(n\)&\(H(n)\)&\(6H(n)+2\)&\(D(n)\)\\
+\midrule
+22&10&62&9\\
+23&12&74&14\\
+25&15&92&21\\
+32&15&92&14\\
+37&15&92&9\\
+38&20&122&23\\
+43&22&134&24\\
+55&31&188&39\\
+100&54&326&63\\
+500&225&1352&176\\
+1000&477&2864&432\\
+3000&1562&9374&1687\\
+5000&2712&16274&3137\\
+10000&5647&33884&6942\\
+15000&8107&48644&9322\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Individual twin--cousin sums in selected finite filtrations. The range ends at the largest obtainable even sum using the observed primes; gaps are the missing even integers \emph{within} that range. These are actual missing representations, not merely absent four-prime block certificates.}
+\label{tab:gaps}
+\small
+\begin{tabular}{rrl}
+\toprule
+Stage \(n\)&Largest obtainable sum&Gaps in the range \(6,8,\ldots\)\\
+\midrule
+22&72&62, 64\\
+23&84&74, 76\\
+25&90&none\\
+32&108&92, 94\\
+37&132&92, 94, 116, 118, 120, 122, 124\\
+38&144&122, 124, 134, 136\\
+40&144&122, 124, 134, 136\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Effect of \(m\bmod5\) in the finite computations. Mean certificate counts use indices \(50\le m\le5000\). The frontier-stage column counts the number of stages \(50\le n\le10000\) for which \(H(n)\) has the indicated residue; successive equal frontier indices contribute repeatedly.}
+\label{tab:five}
+\begin{tabular}{rrr}
+\toprule
+\(m\bmod5\)&Mean \(R(m)\)&Stages with \(H(n)\equiv m\pmod5\)\\
+\midrule
+0&30.60&905\\
+1&30.30&251\\
+2&15.88&8424\\
+3&30.93&130\\
+4&32.18&241\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The observed dominance of residue class 2 in the frontier waiting times is consistent with Proposition~\ref{prop:five}: fewer locally admissible index choices make certificates rarer. The data do not establish a distribution law, an independence model, or a universal bound on waiting times.
+
+\section{A heuristic and a precise conditional route}
+The local computation suggests a Hardy--Littlewood-type expectation
+\begin{equation}\label{eq:heuristic}
+R(m)\quad\text{typically of order}\quad
+\SM(m)\frac{m}{(\log m)^4}.
+\end{equation}
+There are \(m-1\) candidate values of \(a\) and four primality requirements, with the singular series correcting for arithmetic dependence. The strictly positive lower bound \eqref{eq:lower} explains why there is no \emph{local} reason for permanent extinction. It does not prove that any candidate is prime in the \emph{finite} interval \(1\le a<m\). In particular, standard fixed-pattern prime-tuple conjectures must not be silently treated as estimates uniform in the moving parameter \(m\).
+
+For clarity, the following conditional implication states exactly what degree of uniformity would suffice.
+\begin{proposition}[A sufficient analytic hypothesis]\label{prop:conditional}
+Fix \(0<\delta<1/2\). Suppose the number \(R_\delta(m)\) of certificates with \(\delta m\le a\le(1-\delta)m\) satisfies, uniformly as \(m\to\infty\),
+\begin{equation}\label{eq:uniform}
+R_\delta(m)=\bigl(1+o(1)\bigr)(1-2\delta)\SM(m)\frac{m}{(\log m)^4}.
+\end{equation}
+Then TCB holds for all sufficiently large \(m\). If its remaining finitely many cases also hold, TCB and hence TCG hold universally.
+\end{proposition}
+\begin{proof}
+By Corollary~\ref{cor:ss}, \(\SM(m)\ge S_0>0\). The right-hand side of \eqref{eq:uniform} therefore eventually exceeds one, and in particular is positive. Since \(R(m)\ge R_\delta(m)\), there is a certificate for every sufficiently large \(m\).
+\end{proof}
+\begin{remark}
+Proposition~\ref{prop:conditional} is conditional and is not a proof of \eqref{eq:uniform}. Controlling four simultaneous prime values of this shape is the outstanding analytic difficulty. Admissibility, finite verification, and the exact rescue recurrence each fall short of that step.
+\end{remark}
+
+\section{Research directions}
+Three questions arise directly from the proven structure.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=22pt]
+\item \textbf{The critical-deadline step.} Can one show that whenever the buffer reaches its last positive unit, some newly available genuine twin or cousin pair certifies the earliest missing block? Proposition~\ref{prop:recurrence} says exactly what an induction would need; it does not guarantee the required primes.
+\item \textbf{The class \(m\equiv2\pmod5\).} Can the forced residue \(a\equiv0\pmod5\), together with the exceptional certificate \(a=1\), be exploited to obtain a rigorous certificate count or a sharper finite-interval lower bound?
+\item \textbf{Multiple rescues from a single arrival.} Can the correlations produced by a newly arriving prime pair, which repairs several historic block indices, be used to bound how far \(H(n)\) can lag behind stage \(n\)? Such a bound must come from actual prime occurrences, not merely candidate congruence classes.
+\end{enumerate}
+
+\section{Conclusion}
+TCG is a Goldbach-type problem with two genuine prime-family restrictions. TCB is a stronger, explicitly four-prime assertion. Their relationship, the complete quartet identity, the prime observation cutoff, the rescue deadline, the buffer recurrence, and the complete local root-count formula are proved here. The computations support both conjectures on substantial finite ranges and isolate a particularly restrictive congruence class modulo five. The open step remains a global existence theorem for at least one four-prime certificate at every block index. No unconditional induction across all indices is obtained.
+
+\appendix
+\section{Reproducibility and range of the finite check}
+An accompanying file, \texttt{verify\_twin\_cousin.py}, implements the sieve-and-certificate algorithm. In pseudocode, the two essential parts are:
+\begin{enumerate}[leftmargin=20pt]
+\item Sieve every integer through 30,010. Record regular twin indices \(a\) for which \(6a\pm1\) are both prime and cousin indices \(b\) for which \(6b+1,6b+5\) are both prime.
+\item For each pair of recorded indices, set \(m=a+b\), increase \(R(m)\), and update \(\tau_m\) by the arrival formula \eqref{eq:tau}. For each stage \(n\), scan upward to the first \(m\) with \(\tau_m>n\); compute \(D(n)\). To tabulate actual available even sums, independently include the exceptional pairs \((3,5)\) and \((3,7)\) and recombine every eligible twin-prime member with every eligible cousin-prime member.
+\end{enumerate}
+The prime cutoff is sufficient for verifying all block indices through \(m=5000\). The finite stage computation through \(n=15000\) is independent of any unproved prime-distribution estimate. A computer verification cannot supply a universal prime-existence proof.
+
+\bibliographystyle{plain}
+\bibliography{twin_cousin_goldbach}
+\end{document}
